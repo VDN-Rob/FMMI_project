@@ -138,7 +138,7 @@ const App: FC = () => {
       setPrediction(response.data.prediction);
 
       // Request waterfall chart
-      const responseURL = await axios.get<{ chart_url_5: string, chart_url_19: string }>(`${API_URL}/generate-plots`);
+      const responseURL = await axios.get<{ chart_url_5: string, chart_url_19: string }>(`${API_URL}/generate-waterfall`);
       handleUrlChange("five_factor","/" + responseURL.data.chart_url_5);
       handleUrlChange("nineteen_factor","/" + responseURL.data.chart_url_19);
 
@@ -154,12 +154,8 @@ const App: FC = () => {
   const handleCourseSelection = async () => {
     const response = await axios.post(`${API_URL}/submit_course`, { course: currentCourse });
     setFormData(response.data)
-    if (currentCourse in allCourses) {
-      setPage('input')
-    } else {
-      allCourses.push(currentCourse)
-      setPage('input')
-    }
+    allCourses.push(currentCourse)
+    setPage('input')
   }
 
   const handleCleaning = async () => {
