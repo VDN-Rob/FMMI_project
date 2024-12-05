@@ -1,2 +1,12 @@
-/test_app/
-/Myapp/android/
+test_app/
+Myapp/android/
+node_modules
+Userdata.csv
+StudentPerformanceFactors.csv
+/static/
+app copy.py
+MyApp/__tests__
+MyApp/.bundle
+MyApp/android
+MyApp/ios
+MyApp/Charlotte.tsx
