@@ -66,8 +66,10 @@ const styles = StyleSheet.create({
     subtitle: { fontSize: 16, textAlign: 'center', marginBottom: 20 },
     label: { fontSize: 16, fontWeight: '600', marginBottom: 5 },
     label_cs: { fontSize: 36, fontWeight: '600', marginBottom: 5, textAlign: 'center' },
+    label_sp: { fontSize: 20, fontWeight: '600', marginBottom: 5, textAlign: 'center' },
     inputContainer: { marginBottom: 15 },
     input: { borderWidth: 1, borderColor: '#ccc', padding: 10, borderRadius: 5, height: 60, fontSize: 24 },
+    input_sp: { borderWidth: 1, borderColor: '#ccc', padding: 10, borderRadius: 5, height: 50, fontSize: 24 },
     loadingText: { fontSize: 18, marginTop: 10 },
     prediction: { fontSize: 32, fontWeight: 'bold', marginVertical: 20 },
     text2: {
@@ -306,7 +308,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         alignItems: "center",
         marginTop: 100,
-        marginBottom: 50,
+        marginBottom: 10,
     },
     Group381: {
         width: "70%",
