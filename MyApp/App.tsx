@@ -5,7 +5,7 @@ import CustomSlider from './CustomSlider';
 import CustomDropDown from './CustomDropDown';
 import styles from './styles';
 
-const API_URL = 'http://192.168.0.193:5000';
+const API_URL = 'http://10.46.195.112:5000';
 
 const App: FC = () => {
   const [page, setPage] = useState<string>('home'); // Dit aanpassen als jullie die als eerste pagina willen
@@ -158,7 +158,7 @@ const App: FC = () => {
 
   const renderCourseInputField = (label: string, placeholder: string, keyboardType: any = 'default') => (
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>{label}</Text>
+        <Text style={styles.label_cs}>{label}</Text>
         <TextInput
             style={styles.input}
             placeholder={placeholder}
