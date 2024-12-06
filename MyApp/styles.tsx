@@ -2,6 +2,36 @@ import { Dimensions, StyleSheet } from 'react-native';
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+    // Page input
+    Input_top_container: {flex: 1, flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start'},
+    Input_container: { flexGrow: 1, padding: 20, paddingBottom: 100 },
+    Input_title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', paddingTop: 20 },
+    sliderContainer: {
+        marginVertical: 10,
+        padding: 10,
+        borderRadius: 5,
+    },
+    sliderLabel: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    sliderValue: {
+        marginTop: 5,
+        fontSize: 14,
+        color: '#555',
+        textAlign: 'center',
+    },
+    Group61: {
+        width: 100,
+        height: 41,
+        backgroundColor: "rgba(44,17,252,0.08)",
+        alignItems: "center",
+        justifyContent: 'center',
+        margin: 10
+    },
+
+
     emptyMessage: {
         fontSize: 16,
         color: 'gray',
@@ -60,9 +90,7 @@ const styles = StyleSheet.create({
         color: '#999999', // Subtle gray for loading text
     },
     container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-    scrollContainer: { flexGrow: 1, padding: 20 },
     centeredContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', paddingTop: 20 },
     subtitle: { fontSize: 16, textAlign: 'center', marginBottom: 20 },
     label: { fontSize: 16, fontWeight: '600', marginBottom: 5 },
     label_cs: { fontSize: 36, fontWeight: '600', marginBottom: 5, textAlign: 'center' },
@@ -80,22 +108,7 @@ const styles = StyleSheet.create({
         lineHeight: 24,       // Provides comfortable readability with a consistent ratio
         fontWeight: '400',    // Keeps the text weight balanced and not too bold
     },
-    sliderContainer: {
-        marginVertical: 10,
-        padding: 10,
-        borderRadius: 5,
-    },
-    sliderLabel: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginBottom: 5,
-    },
-    sliderValue: {
-        marginTop: 5,
-        fontSize: 14,
-        color: '#555',
-        textAlign: 'center',
-    },
+    
     Frame1: {
         display: 'flex',
         flexDirection: 'column',
@@ -381,21 +394,6 @@ const styles = StyleSheet.create({
         left: 0.1 * width,
         alignItems: "baseline",
         justifyContent: "center",
-    },
-    Group61: {
-        width: 115,
-        height: 41,
-        position: 'absolute',
-        bottom: 50,
-        left: 15,
-        // paddingLeft: 15,
-        // paddingRight: 15,
-        // paddingTop: 5,
-        // paddingBottom: 28,
-        backgroundColor: "rgba(44,17,252,0.08)",
-        alignItems: "center",
-        justifyContent: "center",
-        // marginTop: 40,
     },
     Continue: {
         display: "flex",
