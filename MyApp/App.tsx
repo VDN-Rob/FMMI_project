@@ -147,8 +147,12 @@ const App: FC = () => {
   const handleCourseSelection = async () => {
     const response = await axios.post(`${API_URL}/submit_course`, { course: currentCourse });
     setFormData(response.data)
-    allCourses.push(currentCourse)
-    setPage('input')
+    if (currentCourse in allCourses) {
+      setPage('input')
+    } else {
+      allCourses.push(currentCourse)
+      setPage('input')
+    }
   }
 
   const handleCleaning = async () => {
