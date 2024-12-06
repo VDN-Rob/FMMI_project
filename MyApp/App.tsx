@@ -5,7 +5,7 @@ import CustomSlider from './CustomSlider';
 import CustomDropDown from './CustomDropDown';
 import styles from './styles';
 
-const API_URL = 'http://192.168.196.47:5002';
+const API_URL = 'http://10.46.195.112:5000';
 
 const App: FC = () => {
   const [page, setPage] = useState<string>('home'); // Dit aanpassen als jullie die als eerste pagina willen
@@ -13,7 +13,7 @@ const App: FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [currentCourse, setCurrentCourse] = useState<string>('');
-  const [studyPoints, setStudyPoints] = useState<string>('');
+  const [studyPoints, setStudyPoints] = useState<string>('30');
   const [allCourses, setAllCourses] = useState<string[]>([]);
 
   const handleCourseSelect = (course: string) => {
@@ -44,7 +44,7 @@ const App: FC = () => {
     "Hours_Studied", "Attendance", "Parental_Involvement", "Sleep_Hours",
     "Extracurricular_Activities", "Previous_Scores", "Motivation_Level",
     "Tutoring_Sessions", "Family_Income", "Teacher_Quality", "Peer_Influence",
-    "Physical_Activity", "Distance_from_Home", "Gender", "Learning_Disabilities", "Study_Points"
+    "Physical_Activity", "Distance_from_Home", "Gender", "Learning_Disabilities"
   ];
 
   const [prediction, setPrediction] = useState<number | null>(null);
@@ -115,21 +115,28 @@ const App: FC = () => {
     try {
       setIsLoading(true);
       setLoadingMessage('Submitting data...');
+      console.log("usk")
+      console.log(formData)
       await axios.post(`${API_URL}/submit_input_prediction`, formData);
 
+      console.log("succeeded submitting")
       setLoadingMessage('Loading dataset...');
       await axios.get(`${API_URL}/load-dataset`);
+      console.log("succes Loading dataset")
 
       setLoadingMessage('Training model...');
       await axios.post(`${API_URL}/train-model`, {});
+      console.log("succes training")
 
       setLoadingMessage('Getting prediction...');
       const response = await axios.get<{ prediction: number}>(`${API_URL}/get_prediction`);
       setPrediction(response.data.prediction);
+      console.log("success prediction")
 
       // Request plots
       const responseURL = await axios.get(`${API_URL}/generate-plots`);
 
+      console.log("Loading dataset")
       handleUrlChange("five_factor","/" + responseURL.data.chart_url_5);
       handleUrlChange("nineteen_factor","/" + responseURL.data.chart_url_19);
 
@@ -305,14 +312,13 @@ const App: FC = () => {
             <View style={styles.ForWhichCourseDoYouW}>
               {renderCourseInputField("For which course do you want to make a prediction?", "Enter your course here")}
             </View>
-            // studypoints input
             <View style={styles.inputContainer}>
               <Text style={styles.label_sp}>{"Study points"}</Text>
               <TextInput
                   style={styles.input_sp}
                   placeholder={"e.g. 6"}
                   value={studyPoints}
-                  keyboardType={'numeric'}
+                  keyboardType={'default'}
                   onChangeText={(value) => handleStudyPointsChange(value)}
               />
             </View>
