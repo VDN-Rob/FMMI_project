@@ -317,7 +317,7 @@ def submit_input_prediction():
         # Get user input and apply defaults where necessary
         defaults_copy = deepcopy(defaults)
         data = request.json
-        for key, default_value in defaults.items():
+        for key, default_value in defaults_copy.items():
             received = data.get(key, default_value)
             if received == '':
                 user_input[key] = default_value
