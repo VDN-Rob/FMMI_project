@@ -5,7 +5,7 @@ import CustomSlider from './CustomSlider';
 import CustomDropDown from './CustomDropDown';
 import styles from './styles';
 
-const API_URL = 'http://192.168.0.150:5000';
+const API_URL = 'http://192.168.0.193:5000';
 
 const App: FC = () => {
   const [page, setPage] = useState<string>('home'); // Dit aanpassen als jullie die als eerste pagina willen
@@ -306,7 +306,7 @@ const App: FC = () => {
 
               <View style={styles.coursesListContainer}>
                 {allCourses.length === 0 ? ( // Check if the array is empty
-                    <Text style={styles.emptyMessage}>No courses yet</Text> // Display a message
+                    <Text style={styles.emptyMessage}>No predictions made yet</Text> // Display a message
                 ) : (
                     <FlatList
                         data={allCourses}
@@ -316,11 +316,10 @@ const App: FC = () => {
                     />
                 )}
               </View>
-
-              {currentCourse && (
-                  <Text style={styles.overviewText}>You selected: {currentCourse}</Text>
-              )}
             </View>
+          </View>
+          <View style={styles.Group615}>
+            <Text style={styles.overviewText}>You selected: {currentCourse}</Text>
           </View>
           <View style={styles.Group6}>
             <TouchableOpacity onPress={handleCourseSelection}>
