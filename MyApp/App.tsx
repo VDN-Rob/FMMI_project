@@ -341,8 +341,14 @@ const App: FC = () => {
 
   if (page === 'input') {
     return (
-        <ScrollView contentContainerStyle={[styles.scrollContainer, { paddingBottom: 100 }]}>
-          <Text style={styles.title}>Please provide following details for the selected course</Text>
+      <View style={styles.Input_top_container}>
+          <View style={styles.Group61}>
+            <TouchableOpacity onPress={() => setPage('ChooseCourse')}>
+              <Text style={styles.Back}>Back</Text>
+            </TouchableOpacity>
+          </View>
+        <ScrollView contentContainerStyle={styles.Input_container}>
+          <Text style={styles.Input_title}>Please provide following details for the selected course</Text>
           {renderSlider(
               'How many hours do you study per week (excluding classes) for this course?',
               formData['Hours_Studied'],
@@ -429,17 +435,13 @@ const App: FC = () => {
               dropdownOptions.yn
           )}
           {renderDropdown('What is your gender?', 'Gender', dropdownOptions.gender)}
-          <View style={styles.Group61}>
-            <TouchableOpacity onPress={() => setPage('ChooseCourse')}>
-              <Text style={styles.Back}>Back</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.Group6}>
+          <View style={styles.Group615}>
             <TouchableOpacity onPress={handlePredict}>
               <Text style={styles.Continue}>Continue</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
+      </View>
 
     );
   }
