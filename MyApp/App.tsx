@@ -13,6 +13,7 @@ const App: FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [currentCourse, setCurrentCourse] = useState<string>('');
+  const [studyPoints, setStudyPoints] = useState<string>('30');
   const [allCourses, setAllCourses] = useState<string[]>([]);
 
   const handleCourseSelect = (course: string) => {
@@ -36,6 +37,7 @@ const App: FC = () => {
     Distance_from_Home: '',
     Gender: '',
     Learning_Disabilities: '',
+    Study_Points: '',
   });
 
   const featuresList = [
@@ -96,6 +98,11 @@ const App: FC = () => {
     setFormData((prevData) => ({ ...prevData, [key]: value }));
   };
 
+  const handleStudyPointsChange = (value: string) => {
+    setStudyPoints(value); // Update state
+    handleInputChange("Study_Points", value); // Trigger the additional handler
+  };
+
   const handleUrlChange = (key: string, value: string) => {
     setChartUrl((prevData) => ({ ...prevData, [key]: value }));
   };
@@ -108,24 +115,31 @@ const App: FC = () => {
     try {
       setIsLoading(true);
       setLoadingMessage('Submitting data...');
+      console.log("usk")
+      console.log(formData)
       await axios.post(`${API_URL}/submit_input_prediction`, formData);
 
+      console.log("succeeded submitting")
       setLoadingMessage('Loading dataset...');
       await axios.get(`${API_URL}/load-dataset`);
+      console.log("succes Loading dataset")
 
       setLoadingMessage('Training model...');
       await axios.post(`${API_URL}/train-model`, {});
+      console.log("succes training")
 
       setLoadingMessage('Getting prediction...');
       const response = await axios.get<{ prediction: number}>(`${API_URL}/get_prediction`);
       setPrediction(response.data.prediction);
+      console.log("success prediction")
 
       // Request plots
       const responseURL = await axios.get(`${API_URL}/generate-plots`);
-        
+
+      console.log("Loading dataset")
       handleUrlChange("five_factor","/" + responseURL.data.chart_url_5);
       handleUrlChange("nineteen_factor","/" + responseURL.data.chart_url_19);
-      
+
       for (let feature of featuresList) {
         // Assuming responseURL.data contains properties that correspond to feature names
         if (responseURL.data[feature]) {
@@ -301,6 +315,16 @@ const App: FC = () => {
           <View style={styles.Group953}>
             <View style={styles.ForWhichCourseDoYouW}>
               {renderCourseInputField("For which course do you want to make a prediction?", "Enter your course here")}
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label_sp}>{"Study points"}</Text>
+              <TextInput
+                  style={styles.input_sp}
+                  placeholder={"e.g. 6"}
+                  value={studyPoints}
+                  keyboardType={'default'}
+                  onChangeText={(value) => handleStudyPointsChange(value)}
+              />
             </View>
             <Text style={styles.overviewText}>
               Overview of previous predictions
@@ -542,60 +566,60 @@ const App: FC = () => {
 
   if (page === 'improvements') {
     return (
-      <View style={styles.container}>
-        <Text style={styles.ExpectedScore}>Predicted score: {prediction}%</Text>
-  
-        {/* Back button */}
-        <View style={styles.BackButtonContainer}>
-          <TouchableOpacity onPress={() => setPage('prediction')}>
-            <Text style={styles.Back}>Back</Text>
-          </TouchableOpacity>
-        </View>
-  
-        {/* Scrollable feature analysis section */}
+        <View style={styles.container}>
+          <Text style={styles.ExpectedScore}>Predicted score: {prediction}%</Text>
+
+          {/* Back button */}
+          <View style={styles.BackButtonContainer}>
+            <TouchableOpacity onPress={() => setPage('prediction')}>
+              <Text style={styles.Back}>Back</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Scrollable feature analysis section */}
           <View style={styles.Iphone13145_i}>
             <View style={styles.Group471_i}>
               <View style={styles.Group23_i}>
                 <View style={styles.Group20_i}>
                   <Text style={styles.FeatureTitle}>Feature Impact Analysis</Text>
-                  
+
                   {/* Check if the current feature exists in the plots */}
                   {plots[featureName] ? (
-                    <>
-                      {/* Feature name */}
-                      <Text style={styles.FeatureName}>{featureName}</Text>
-  
-                      {/* Container for graph and text */}
+                      <>
+                        {/* Feature name */}
+                        <Text style={styles.FeatureName}>{featureName}</Text>
+
+                        {/* Container for graph and text */}
                         <Text style={styles.ExplanationText}>{plots[featureName].explanation}</Text>
                         {plots[featureName].url && (
-                          <Image
-                            style={styles.GraphImage}
-                            source={{ uri: `${API_URL}${plots[featureName].url}?${new Date().getTime()}` }}
-                            resizeMode="contain"
-                          />
+                            <Image
+                                style={styles.GraphImage}
+                                source={{ uri: `${API_URL}${plots[featureName].url}?${new Date().getTime()}` }}
+                                resizeMode="contain"
+                            />
                         )}
-                    </>
+                      </>
                   ) : (
-                    <Text style={styles.LoadingText}>Feature not available.</Text>
+                      <Text style={styles.LoadingText}>Feature not available.</Text>
                   )}
                 </View>
               </View>
             </View>
           </View>
-        {/* Navigation buttons to go to the next/previous feature */}
-        <View style={styles.NavigationButtons}>
-          <TouchableOpacity onPress={handlePreviousFeature}>
-            <Text style={styles.NavButtonText}>Previous</Text>
-          </TouchableOpacity>
-          <Text> {currentFeature+1}/15</Text>
-          <TouchableOpacity onPress={handleNextFeature}>
-            <Text style={styles.NavButtonText}>Next</Text>
-          </TouchableOpacity>
+          {/* Navigation buttons to go to the next/previous feature */}
+          <View style={styles.NavigationButtons}>
+            <TouchableOpacity onPress={handlePreviousFeature}>
+              <Text style={styles.NavButtonText}>Previous</Text>
+            </TouchableOpacity>
+            <Text> {currentFeature+1}/15</Text>
+            <TouchableOpacity onPress={handleNextFeature}>
+              <Text style={styles.NavButtonText}>Next</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
     );
   }
-  
+
 
   if (page === 'explanationgraph') {
     return (

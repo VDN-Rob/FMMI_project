@@ -45,6 +45,7 @@ defaults = {
             "Parental_Education_Level": "High School",
             "Distance_from_Home": "Near",
             "Gender": "Male",
+            "Study_Points": 30
         }
 
 featuresList = [
@@ -146,7 +147,10 @@ def plot_feature_effect(feature_name):
     try:
         step = 1
         print(feature_name)
-        user_data = pd.DataFrame([deepcopy(user_input)])
+        user_input_copy = deepcopy(user_input)
+        user_input_copy.pop("Study_Points", None)  # Remove "Study_Points" if it exists; do nothing otherwise
+        
+        user_data = pd.DataFrame([user_input_copy])
 
         # Determine feature range
         if dataset[feature_name].dtype == 'object' or isinstance(dataset[feature_name].iloc[0], str):
@@ -317,8 +321,12 @@ def submit_input_prediction():
         # Get user input and apply defaults where necessary
         defaults_copy = deepcopy(defaults)
         data = request.json
+
+        study_points = int(data.get("Study_Points"))
         for key, default_value in defaults_copy.items():
             received = data.get(key, default_value)
+            if key == "Hours_Studied" or key == "Tutoring_Sessions":
+                received = int(received) * study_points/30
             if received == '':
                 user_input[key] = default_value
             else:
@@ -339,7 +347,9 @@ def api_get_prediction():
         return jsonify({"error": "Model not trained or encoders not initialized."}), 400
 
     try:
-        input_df = pd.DataFrame([user_input])
+        user_input_copy = deepcopy(user_input)
+        user_input_copy.pop("Study_Points", None)  # Remove "Study_Points" if it exists; do nothing otherwise
+        input_df = pd.DataFrame([user_input_copy])
         preprocessed_data, _ = preprocess_data(input_df, encoders)
         prediction = model.predict(preprocessed_data)[0]
 
