@@ -47,6 +47,13 @@ defaults = {
             "Gender": "Male",
         }
 
+featuresList = [
+    "Hours_Studied", "Attendance", "Parental_Involvement", "Sleep_Hours",
+    "Extracurricular_Activities", "Previous_Scores", "Motivation_Level",
+    "Tutoring_Sessions", "Family_Income", "Teacher_Quality", "Peer_Influence",
+    "Physical_Activity", "Distance_from_Home", "Gender", "Learning_Disabilities"
+    ]
+
 # Store user data
 user_input = {}
 course_selection = {}
@@ -135,6 +142,143 @@ def calculate_shap_values(model, X):
     except Exception as e:
         raise Exception(f"Error during SHAP value calculation: {e}")
 
+def plot_feature_effect(feature_name):
+    try:
+        step = 1
+        print(feature_name)
+        user_data = pd.DataFrame([deepcopy(user_input)])
+
+        # Determine feature range
+        if dataset[feature_name].dtype == 'object' or isinstance(dataset[feature_name].iloc[0], str):
+            feature_range = dataset[feature_name].dropna().unique()  # Remove NaN for categorical
+        else:
+            min_value = dataset[feature_name].min()
+            max_value = dataset[feature_name].max()
+            feature_range = np.arange(min_value, max_value + step, step)
+
+        predicted_scores = []
+        for value in feature_range:
+            if pd.isna(value):  # Skip NaN values
+                continue
+            
+            temp_input = user_data.copy()  # Avoid modifying the original DataFrame
+            if dataset[feature_name].dtype == 'object' or isinstance(dataset[feature_name].iloc[0], str):
+                temp_input[feature_name] = str(value)  # Convert to string
+            else:
+                temp_input[feature_name] = float(value)  # Convert to float
+
+            # Preprocess the input
+            processed_temp_input, _ = preprocess_data(temp_input, encoders)
+
+            # Predict the score
+            predicted_score = model.predict(processed_temp_input)[0]
+            predicted_scores.append(predicted_score)
+
+
+
+        # Create the plot
+        plt.figure(figsize=(10, 6))
+        plt.plot(feature_range, predicted_scores, marker='o', linestyle='-')
+        plt.title(f"Effect of {feature_name} on Predicted Output")
+        plt.xlabel(feature_name)
+        plt.ylabel("Predicted Output")
+        plt.grid(True)
+
+        # Save the figure to a file
+        output_dir = 'static/charts'
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        
+        chart_path = os.path.join(output_dir, f"{feature_name}.png")  # Use f-string for variable substitution
+
+        
+        # Save the plot to the file
+        plt.savefig(chart_path)
+        plt.close()
+
+        # Add explanation text
+        explanation = f"The feature '{feature_name}' has been analyzed. The graph shows how varying its values influences the predicted output."
+
+        return (chart_path, explanation)
+    except Exception as e:
+        print("Error: " + feature_name + " " + str(e))
+        return e
+
+def plot_waterfalls():
+    try:
+        default_pos_color = "#0085ca"
+        default_neg_color = "#ca0020"
+        positive_color = "#0085ca"
+        negative_color = "#ca0020"
+        # Ensure that global_shap_values is in the correct format
+        if not isinstance(shap_explanation, shap.Explanation):
+            raise ValueError("SHAP values must be a shap.Explanation object.")
+
+        # Generate the waterfall chart using shap.plot.waterfall
+        plt.figure()
+        
+        # Plotting using shap's built-in waterfall plot
+        shap.plots.waterfall(shap_explanation[0], show = False, max_display=6)
+        for fc in plt.gcf().get_children():
+            for fcc in fc.get_children():
+                if (isinstance(fcc, matplotlib.patches.FancyArrow)):
+                    if (matplotlib.colors.to_hex(fcc.get_facecolor()) == default_pos_color):
+                        fcc.set_facecolor(positive_color)
+                    elif (matplotlib.colors.to_hex(fcc.get_facecolor()) == default_neg_color):
+                        fcc.set_color(negative_color)
+                elif (isinstance(fcc, plt.Text)):
+                    if (matplotlib.colors.to_hex(fcc.get_color()) == default_pos_color):
+                        fcc.set_color(positive_color)
+                    elif (matplotlib.colors.to_hex(fcc.get_color()) == default_neg_color):
+                        fcc.set_color(negative_color)
+        plt.show()
+        
+        # Save the figure to a file
+        output_dir = 'static/charts'
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        
+        chart_path_5 = os.path.join(output_dir, "waterfall_chart_5.png")
+        
+        # Save the plot to the file
+        plt.savefig(chart_path_5)
+        plt.close()
+
+         # Generate the waterfall chart using shap.plot.waterfall
+        plt.figure()
+        
+        # Plotting using shap's built-in waterfall plot
+        shap.plots.waterfall(shap_explanation[0], show = False, max_display=20)
+        for fc in plt.gcf().get_children():
+            for fcc in fc.get_children():
+                if (isinstance(fcc, matplotlib.patches.FancyArrow)):
+                    if (matplotlib.colors.to_hex(fcc.get_facecolor()) == default_pos_color):
+                        fcc.set_facecolor(positive_color)
+                    elif (matplotlib.colors.to_hex(fcc.get_facecolor()) == default_neg_color):
+                        fcc.set_color(negative_color)
+                elif (isinstance(fcc, plt.Text)):
+                    if (matplotlib.colors.to_hex(fcc.get_color()) == default_pos_color):
+                        fcc.set_color(positive_color)
+                    elif (matplotlib.colors.to_hex(fcc.get_color()) == default_neg_color):
+                        fcc.set_color(negative_color)
+        plt.show()
+        
+        # Save the figure to a file
+        output_dir = 'static/charts'
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        
+        chart_path_19 = os.path.join(output_dir, "waterfall_chart_19.png")
+        
+        # Save the plot to the file
+        plt.savefig(chart_path_19)
+        plt.close()
+        
+        return {"chart_url_5": chart_path_5, "chart_url_19": chart_path_19}
+    except Exception as e:
+        print("Waterfall error: " + str(e))
+        return e
+    
 # API Routes
 @app.route('/load-dataset', methods=['GET'])
 def api_load_dataset():
@@ -219,79 +363,18 @@ def generate_plots():
         return jsonify({"error": "SHAP values not found. Please run prediction first."}), 400
 
     try:
-        default_pos_color = "#0085ca"
-        default_neg_color = "#ca0020"
-        positive_color = "#0085ca"
-        negative_color = "#ca0020"
-        # Ensure that global_shap_values is in the correct format
-        if not isinstance(shap_explanation, shap.Explanation):
-            raise ValueError("SHAP values must be a shap.Explanation object.")
+        result = {}
 
-        # Generate the waterfall chart using shap.plot.waterfall
-        plt.figure()
+        for feature in featuresList:
+            result[feature] = plot_feature_effect(feature)
         
-        # Plotting using shap's built-in waterfall plot
-        shap.plots.waterfall(shap_explanation[0], show = False, max_display=6)
-        for fc in plt.gcf().get_children():
-            for fcc in fc.get_children():
-                if (isinstance(fcc, matplotlib.patches.FancyArrow)):
-                    if (matplotlib.colors.to_hex(fcc.get_facecolor()) == default_pos_color):
-                        fcc.set_facecolor(positive_color)
-                    elif (matplotlib.colors.to_hex(fcc.get_facecolor()) == default_neg_color):
-                        fcc.set_color(negative_color)
-                elif (isinstance(fcc, plt.Text)):
-                    if (matplotlib.colors.to_hex(fcc.get_color()) == default_pos_color):
-                        fcc.set_color(positive_color)
-                    elif (matplotlib.colors.to_hex(fcc.get_color()) == default_neg_color):
-                        fcc.set_color(negative_color)
-        plt.show()
-        
-        # Save the figure to a file
-        output_dir = 'static/charts'
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-        
-        chart_path_5 = os.path.join(output_dir, "waterfall_chart_5.png")
-        
-        # Save the plot to the file
-        plt.savefig(chart_path_5)
-        plt.close()
+        result.update(plot_waterfalls())
 
-         # Generate the waterfall chart using shap.plot.waterfall
-        plt.figure()
-        
-        # Plotting using shap's built-in waterfall plot
-        shap.plots.waterfall(shap_explanation[0], show = False, max_display=20)
-        for fc in plt.gcf().get_children():
-            for fcc in fc.get_children():
-                if (isinstance(fcc, matplotlib.patches.FancyArrow)):
-                    if (matplotlib.colors.to_hex(fcc.get_facecolor()) == default_pos_color):
-                        fcc.set_facecolor(positive_color)
-                    elif (matplotlib.colors.to_hex(fcc.get_facecolor()) == default_neg_color):
-                        fcc.set_color(negative_color)
-                elif (isinstance(fcc, plt.Text)):
-                    if (matplotlib.colors.to_hex(fcc.get_color()) == default_pos_color):
-                        fcc.set_color(positive_color)
-                    elif (matplotlib.colors.to_hex(fcc.get_color()) == default_neg_color):
-                        fcc.set_color(negative_color)
-        plt.show()
-        
-        # Save the figure to a file
-        output_dir = 'static/charts'
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-        
-        chart_path_19 = os.path.join(output_dir, "waterfall_chart_19.png")
-        
-        # Save the plot to the file
-        plt.savefig(chart_path_19)
-        plt.close()
-        
-        return jsonify({"chart_url_5": chart_path_5, "chart_url_19": chart_path_19})
+        return jsonify(result)
 
     except Exception as e:
-        print("Error generating waterfall chart:", str(e))
-        return jsonify({"error": f"Error generating waterfall chart: {str(e)}"}), 500
+        print("Error generating plots:", str(e))
+        return jsonify({"error": f"Error generating plots: {str(e)}"}), 500
 
 
 @app.route('/static/charts/<filename>')
@@ -327,52 +410,6 @@ def api_handle_cleaning():
     except Exception as e:
         return jsonify({"error during cleaning": str(e)}), 400
 
-@app.route('/plot-feature-effect', methods=['POST'])
-def api_plot_feature_effect():
-    try:
-        feature_name = request.json.get('feature_name')
-        step = request.json.get('step', 1)
-        print(feature_name)
-        user_data = pd.DataFrame([deepcopy(user_input)])
-
-        # Determine feature range
-        if dataset[feature_name].dtype == 'object' or isinstance(dataset[feature_name].iloc[0], str):
-            feature_range = dataset[feature_name].unique()
-        else:
-            min_value = dataset[feature_name].min()
-            max_value = dataset[feature_name].max()
-            feature_range = np.arange(min_value, max_value + step, step)
-
-        predicted_scores = []
-        for value in feature_range:
-            temp_input = user_data
-            temp_input[feature_name] = value
-            processed_temp_input, _ = preprocess_data(temp_input, encoders)
-            predicted_score = model.predict(processed_temp_input)[0]
-            predicted_scores.append(predicted_score)
-
-        # Create the plot
-        plt.figure(figsize=(10, 6))
-        plt.plot(feature_range, predicted_scores, marker='o', linestyle='-')
-        plt.title(f"Effect of {feature_name} on Predicted Output")
-        plt.xlabel(feature_name)
-        plt.ylabel("Predicted Output")
-        plt.grid(True)
-
-        # Save plot to a base64-encoded string
-        buf = io.BytesIO()
-        plt.savefig(buf, format='png')
-        buf.seek(0)
-        plot_data = base64.b64encode(buf.read()).decode('utf-8')
-        buf.close()
-
-        # Add explanation text
-        explanation = f"The feature '{feature_name}' has been analyzed. The graph shows how varying its values influences the predicted output."
-
-        return jsonify({"plot": plot_data, "explanation": explanation})
-    except Exception as e:
-        print("Error during plotting: {}", str(e))
-        return jsonify({"error": str(e)}), 500
 
 # Main entry point
 if __name__ == "__main__":

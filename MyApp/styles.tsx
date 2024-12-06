@@ -878,7 +878,7 @@ const styles = StyleSheet.create({
     FeatureTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
     ExplanationText: { fontSize: 14, marginVertical: 10, textAlign: 'center' },
     LoadingText: { fontSize: 14, fontStyle: 'italic', marginVertical: 10 },
-    GraphImage: { width: 300, height: 200, marginVertical: 10 },
+    GraphImage: { width: 0.9 * width, aspectRatio: 10/6, marginVertical: 10 },
     FetchButton: {
         backgroundColor: '#007BFF',
         padding: 10,

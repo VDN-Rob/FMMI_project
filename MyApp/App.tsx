@@ -51,6 +51,8 @@ const App: FC = () => {
     nineteen_factor: ''
   });
 
+  const [plots, setPlots] = useState<Record<string, any>>({});
+
 
   const dropdownOptions = {
     lmh: [
@@ -78,9 +80,6 @@ const App: FC = () => {
     ],
   };
 
-  const [loading_i, setLoading_i] = useState(false);
-  const [featureEffect, setFeatureEffect] = useState('');
-  const [explanation, setExplanation] = useState('');
   const [currentFeature, setCurrentFeature] = useState(0);
 
   const handleNextFeature = () => {
@@ -93,32 +92,16 @@ const App: FC = () => {
 
   const featureName = featuresList[currentFeature];
 
-  const fetchFeatureEffect = async (featureName: string) => {
-    setLoading_i(true);
-    try {
-      const response = await axios.post(`${API_URL}/plot-feature-effect`, {feature_name: "Hours_Studied"});
-
-      setExplanation(response.data.explanation);
-      const featureExplanation = `This is an explanation of the impact of ${featureName} on the predicted score.`;
-
-      // Simulating delay (replace with actual API call)
-      setTimeout(() => {
-        setFeatureEffect(`data:image/png;base64,${response.data.plot}`); // Set the image URL or base64 string
-        setExplanation(featureExplanation); // Set the explanation
-        setLoading_i(false); // Stop loading
-      }, 2000);
-    } catch (error) {
-      console.error("Error fetching feature effect:", error);
-    }
-    setLoading_i(false);
-  };
-
   const handleInputChange = (key: string, value: string | number) => {
     setFormData((prevData) => ({ ...prevData, [key]: value }));
   };
 
   const handleUrlChange = (key: string, value: string) => {
     setChartUrl((prevData) => ({ ...prevData, [key]: value }));
+  };
+
+  const handlePlotChange = (key: string, url: string, explanation: string) => {
+    setPlots((prevData) => ({ ...prevData, [key]: {url, explanation} }));
   };
 
   const handlePredict = async () => {
@@ -137,10 +120,20 @@ const App: FC = () => {
       const response = await axios.get<{ prediction: number}>(`${API_URL}/get_prediction`);
       setPrediction(response.data.prediction);
 
-      // Request waterfall chart
-      const responseURL = await axios.get<{ chart_url_5: string, chart_url_19: string }>(`${API_URL}/generate-waterfall`);
+      // Request plots
+      const responseURL = await axios.get(`${API_URL}/generate-plots`);
+        
       handleUrlChange("five_factor","/" + responseURL.data.chart_url_5);
       handleUrlChange("nineteen_factor","/" + responseURL.data.chart_url_19);
+      
+      for (let feature of featuresList) {
+        // Assuming responseURL.data contains properties that correspond to feature names
+        if (responseURL.data[feature]) {
+          handlePlotChange(feature, "/" + responseURL.data[feature][0], responseURL.data[feature][1]);
+        } else {
+          console.warn(`No data found for feature: ${feature}`);
+        }
+      }
 
       setPage('prediction');
     } catch (error) {
@@ -544,67 +537,60 @@ const App: FC = () => {
 
   if (page === 'improvements') {
     return (
-        <View style={styles.container}>
-          <Text style={styles.ExpectedScore}>Predicted score: {prediction}%</Text>
-
-          <View style={styles.BackButtonContainer}>
-            <TouchableOpacity onPress={() => setPage('prediction')}>
-              <Text style={styles.Back}>Back</Text>
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView horizontal style={styles.scrollView}>
-            {/* Feature Effect Section */}
-            <View style={styles.Iphone13145_i}>
-              <View style={styles.Group471_i}>
-                <View style={styles.Group23_i}>
-                  <View style={styles.Group20_i}>
-                    <Text style={styles.FeatureTitle}>Feature Impact Analysis</Text>
-                    {loading_i ? (
-                        <Text style={styles.LoadingText}>Loading feature effect...</Text>
-                    ) : (
-                        <>
-                          <Text style={styles.FeatureName}>{featureName}</Text>
-
-                          {/* Container for graph and text */}
-                          <View style={styles.FeatureEffectContainer}>
-                            <Text style={styles.ExplanationText}>{explanation}</Text>
-                            {featureEffect && (
-                                <Image
-                                    style={styles.GraphImage}
-                                    source={{ uri: featureEffect }}
-                                    resizeMode="contain"
-                                />
-                            )}
-
-                            {/* Button to trigger the fetch for feature effect */}
-                            <TouchableOpacity
-                                style={styles.FetchButton}
-                                onPress={() => fetchFeatureEffect(featureName)}
-                            >
-                              <Text style={styles.ButtonText}>Analyze {featureName}</Text>
-                            </TouchableOpacity>
-                          </View>
-                        </>
-                    )}
-
-                    {/* Navigation buttons to go to the next/previous feature */}
-                    <View style={styles.NavigationButtons}>
-                      <TouchableOpacity onPress={handlePreviousFeature}>
-                        <Text style={styles.NavButtonText}>Previous</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={handleNextFeature}>
-                        <Text style={styles.NavButtonText}>Next</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
+      <View style={styles.container}>
+        <Text style={styles.ExpectedScore}>Predicted score: {prediction}%</Text>
+  
+        {/* Back button */}
+        <View style={styles.BackButtonContainer}>
+          <TouchableOpacity onPress={() => setPage('prediction')}>
+            <Text style={styles.Back}>Back</Text>
+          </TouchableOpacity>
+        </View>
+  
+        {/* Scrollable feature analysis section */}
+          <View style={styles.Iphone13145_i}>
+            <View style={styles.Group471_i}>
+              <View style={styles.Group23_i}>
+                <View style={styles.Group20_i}>
+                  <Text style={styles.FeatureTitle}>Feature Impact Analysis</Text>
+                  
+                  {/* Check if the current feature exists in the plots */}
+                  {plots[featureName] ? (
+                    <>
+                      {/* Feature name */}
+                      <Text style={styles.FeatureName}>{featureName}</Text>
+  
+                      {/* Container for graph and text */}
+                        <Text style={styles.ExplanationText}>{plots[featureName].explanation}</Text>
+                        {plots[featureName].url && (
+                          <Image
+                            style={styles.GraphImage}
+                            source={{ uri: `${API_URL}${plots[featureName].url}?${new Date().getTime()}` }}
+                            resizeMode="contain"
+                          />
+                        )}
+                    </>
+                  ) : (
+                    <Text style={styles.LoadingText}>Feature not available.</Text>
+                  )}
                 </View>
               </View>
             </View>
-          </ScrollView>
+          </View>
+        {/* Navigation buttons to go to the next/previous feature */}
+        <View style={styles.NavigationButtons}>
+          <TouchableOpacity onPress={handlePreviousFeature}>
+            <Text style={styles.NavButtonText}>Previous</Text>
+          </TouchableOpacity>
+          <Text> {currentFeature+1}/15</Text>
+          <TouchableOpacity onPress={handleNextFeature}>
+            <Text style={styles.NavButtonText}>Next</Text>
+          </TouchableOpacity>
         </View>
+      </View>
     );
   }
+  
 
   if (page === 'explanationgraph') {
     return (
