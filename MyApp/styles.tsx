@@ -2,6 +2,12 @@ import { Dimensions, StyleSheet } from 'react-native';
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+    emptyMessage: {
+        fontSize: 16,
+        color: 'gray',
+        textAlign: 'center',
+        marginTop: 20,
+    },
     container2: {
         flex: 1,
         backgroundColor: '#rgba(255,255,255,1)', // Background color for the page
@@ -58,9 +64,9 @@ const styles = StyleSheet.create({
     centeredContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', paddingTop: 20 },
     subtitle: { fontSize: 16, textAlign: 'center', marginBottom: 20 },
-    label: { fontSize: 16, fontWeight: '600', marginBottom: 5 },
+    label: { fontSize: 36, fontWeight: '600', marginBottom: 5, textAlign: 'center' },
     inputContainer: { marginBottom: 15 },
-    input: { borderWidth: 1, borderColor: '#ccc', padding: 10, borderRadius: 5 },
+    input: { borderWidth: 1, borderColor: '#ccc', padding: 10, borderRadius: 5, height: 60, fontSize: 24 },
     loadingText: { fontSize: 18, marginTop: 10 },
     prediction: { fontSize: 32, fontWeight: 'bold', marginVertical: 20 },
     text2: {
@@ -192,14 +198,14 @@ const styles = StyleSheet.create({
     },
     Group997: {
         display: "flex",
-        justifyContent: "center",  
-        alignItems: "center",  
-        textAlign: "center",    
+        justifyContent: "center",
+        alignItems: "center",
+        textAlign: "center",
         paddingTop: 125,
         paddingBottom: 50,
-        width: '100%' 
+        width: '100%'
         // paddingLeft: 20,
-        
+
     },
     HowDoesOurApplicatio: {
         display: 'flex',
@@ -221,7 +227,7 @@ const styles = StyleSheet.create({
         width: '90%',
         paddingLeft: '10%',
         // boxSizing: 'border-box',
-        
+
     },
     WhatDoesItDoThisAppl: {
         color: 'rgba(0,0,0,1)',
@@ -238,7 +244,7 @@ const styles = StyleSheet.create({
         width: 100,
         height: 41,
         position: 'absolute', // Hiermee zet je het element uit de normale flow
-        top: 0.04 * height, // Plaatst de knop aan de bovenkant
+        top: 0.05 * height, // Plaatst de knop aan de bovenkant
         left: 0,
         backgroundColor: 'rgba(44,17,252,0.08)',
         alignItems: 'center',
@@ -298,7 +304,7 @@ const styles = StyleSheet.create({
         fontWeight: "400",
         textAlign: "center",
         alignItems: "center",
-        marginTop: 160,
+        marginTop: 100,
         marginBottom: 50,
     },
     Group381: {
@@ -343,7 +349,7 @@ const styles = StyleSheet.create({
         paddingTop: 19,
         paddingBottom: 50,
         borderWidth: 2,
-        borderColor: "rgba(0,0,0,1)",
+        borderColor: "rgba(0,0,0,0)",
     },
     HierMoetDeOverviewVa: {
         display: "flex",
@@ -398,7 +404,7 @@ const styles = StyleSheet.create({
         fontWeight: "400",
         textAlign: "center",
     },
-        Iphone13143: {
+    Iphone13143: {
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-start",
@@ -486,7 +492,7 @@ const styles = StyleSheet.create({
         flexDirection: "column", // Zorgt ervoor dat de tekst verticaal gestapeld wordt
         alignItems: "flex-start", // Zorgt ervoor dat de tekst naar links wordt uitgelijnd
         justifyContent: "flex-start", // Zorgt ervoor dat de tekst niet in het midden staat
-        width: '90%',  
+        width: '90%',
         textAlign: "left",
         marginBottom: 20,
     },
@@ -673,7 +679,7 @@ const styles = StyleSheet.create({
         fontWeight: "400",
         textAlign: "center",
     },
-        ExpectedScore: {
+    ExpectedScore: {
         fontSize: 36,
         fontWeight: 'bold',
         marginBottom: 10,
@@ -684,7 +690,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
     },
-        Iphone13146: {
+    Iphone13146: {
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-start",
@@ -874,10 +880,10 @@ const styles = StyleSheet.create({
     LoadingText: { fontSize: 14, fontStyle: 'italic', marginVertical: 10 },
     GraphImage: { width: 300, height: 200, marginVertical: 10 },
     FetchButton: {
-      backgroundColor: '#007BFF',
-      padding: 10,
-      borderRadius: 5,
-      marginTop: 10,
+        backgroundColor: '#007BFF',
+        padding: 10,
+        borderRadius: 5,
+        marginTop: 10,
     },
     ButtonText: { color: '#fff', fontSize: 16, textAlign: 'center' },
     FeatureEffectContainer: {
@@ -888,7 +894,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         backgroundColor: '#f9f9f9',
-      },
+    },
     NavigationButtons: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -900,9 +906,9 @@ const styles = StyleSheet.create({
         color: '#007BFF',
     },
     FeatureName: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      marginBottom: 10,
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 10,
     },
 });
 
