@@ -473,66 +473,60 @@ const App: FC = () => {
 
   if (page === 'prediction') {
     return (
-        <View style={styles.container_p}>
-          {/* Header Section */}
-          <View style={styles.header_p}>
-            <Text style={styles.title_p}>Expected score: {prediction}%</Text>
-          </View>
+        <View style={styles.topContainer}>
+          <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('input')}>
+            <Text style={styles.ButtonText}>Back</Text>
+          </TouchableOpacity>
+          
+          <View style={styles.container_p}>
+            <View style={styles.header_p}>
+              <Text style={styles.title_p}>Expected score: {prediction}%</Text>
+            </View>
 
-          {/* Chart Section */}
-          <View style={styles.chartContainer_p}>
-            {chartUrl ? (
-                <Image
-                    source={{ uri: `${API_URL}${chartUrl.five_factor}?${new Date().getTime()}` }}
-                    style={styles.chartImage_p}
-                    resizeMode="contain"
-                />
-            ) : (
-                <Text style={styles.loadingText_p}>Loading chart...</Text>
-            )}
+            {/* Chart Section */}
+            <View style={styles.chartContainer_p}>
+              {chartUrl ? (
+                  <Image
+                      source={{ uri: `${API_URL}${chartUrl.five_factor}?${new Date().getTime()}` }}
+                      style={styles.chartImage_p}
+                      resizeMode="contain"
+                  />
+              ) : (
+                  <Text style={styles.loadingText_p}>Loading chart...</Text>
+              )}
+            </View>
             <Text style={styles.description}>
-              This graph shows the 5 factors with the greatest impact on your predicted score.
-            </Text>
-          </View>
-
-          {/* Explanation Link */}
-          <View style={styles.linkContainer}>
-            <TouchableOpacity onPress={() => setPage('explanationgraph')}>
+                This graph shows the 5 factors with the greatest impact on your predicted score.
+              </Text>
+            <TouchableOpacity style={styles.linkContainer} onPress={() => setPage('explanationgraph')}>
               <Text style={styles.linkText}>
                 Learn more about how this graph works
               </Text>
             </TouchableOpacity>
-          </View>
 
-          {/* Factors Impact Section */}
-          <View style={styles.factorsContainer}>
-            {['highest', 'second highest', 'third highest', 'fourth highest', 'fifth highest'].map(
-                (rank, index) => (
-                    <Text key={index} style={styles.factorText}>
-                      • Factor with {rank} impact: (description + impact)
-                    </Text>
-                )
-            )}
-          </View>
+            {/* Factors Impact Section */}
+            <View style={styles.factorsContainer}>
+              {['highest', 'second highest', 'third highest', 'fourth highest', 'fifth highest'].map(
+                  (rank, index) => (
+                      <Text key={index} style={styles.factorText}>
+                        • Factor with {rank} impact: (description + impact)
+                      </Text>
+                  )
+              )}
+            </View>
 
-          {/* Action Buttons */}
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={() => setPage('improvements')} style={styles.button}>
-              <Text style={styles.buttonText}>How to improve my result?</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setPage('DetailedGraph')} style={styles.button}>
-              <Text style={styles.buttonText}>See full graph with all factors</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleCleaning} style={styles.button}>
-              <Text style={styles.buttonText}>Go back to main screen</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Back Button */}
-          <View style={styles.BackButtonContainer}>
-            <TouchableOpacity onPress={() => setPage('input')}>
-              <Text style={styles.ButtonText}>Back</Text>
-            </TouchableOpacity>
+            {/* Action Buttons */}
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity onPress={() => setPage('improvements')} style={styles.button}>
+                <Text style={styles.buttonText}>How to improve my result?</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setPage('DetailedGraph')} style={styles.button}>
+                <Text style={styles.buttonText}>See full graph with all factors</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleCleaning} style={styles.button}>
+                <Text style={styles.buttonText}>Go back to main screen</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
     );

@@ -50,7 +50,13 @@ const styles = StyleSheet.create({
         fontWeight: "400",
         textAlign: "center",
     },
-    SmallTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', paddingTop: 20 },
+    SmallTitle: { 
+        fontSize: 24, 
+        fontWeight: 'bold', 
+        marginBottom: 20, 
+        textAlign: 'center', 
+        paddingTop: 20
+    },
 
 
     // Page home
@@ -744,9 +750,10 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     title_p: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#333333',
+        fontSize: 24, 
+        fontWeight: 'bold', 
+        marginBottom: 20, 
+        textAlign: 'center', 
     },
 
     // Chart container
@@ -756,11 +763,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 5,
         borderRadius: 8,
-        padding: 5,
         overflow: 'hidden',
+        height: 0.6 * height
     },
     chartImage_p: {
-        width: 0.90 * width,
+        width: 0.95 * width,
         height: "100%"
     },
     loadingText_p: {
