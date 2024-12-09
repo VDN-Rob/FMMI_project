@@ -1,5 +1,5 @@
 import React, { useState, FC } from 'react';
-import { View, Text, Button, TextInput, StyleSheet, ScrollView, ActivityIndicator, Alert, Image, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, Button, TextInput, StyleSheet, ScrollView, ActivityIndicator, Alert, Image, TouchableOpacity, FlatList, ImageBackground } from 'react-native';
 import axios from 'axios';
 import CustomSlider from './CustomSlider';
 import CustomDropDown from './CustomDropDown';
@@ -161,7 +161,10 @@ const App: FC = () => {
   const handleCourseSelection = async () => {
     const response = await axios.post(`${API_URL}/submit_course`, { course: currentCourse });
     setFormData(response.data)
-    if (currentCourse in allCourses) {
+    console.log(currentCourse)
+    console.log(allCourses)
+    console.log(allCourses.includes(currentCourse))
+    if (allCourses.includes(currentCourse)) {
       setPage('input')
     } else {
       allCourses.push(currentCourse)
@@ -235,86 +238,85 @@ const App: FC = () => {
 
   if (page === 'home') {
     return (
-        <View style={styles.Frame1}>
-          <View style={styles.Group018}>
-            <Text style={styles.StudentPerformancePr}>
+      <ImageBackground
+        source={require('./images/background.jpg')} // Reference your local image
+        style={styles.background}
+      >
+        <View style={styles.HomeTopContainer}>
+          <View style={styles.HomeContainer}>
+            <Text style={styles.HomeMainTitle}>
               STUDENT PERFORMANCE PREDICTOR
             </Text>
-            <Text style={styles.ToPredictAndImproveY}>
+            <Text style={styles.HomeSubtitle}>
               To predict and improve your future exam scores
             </Text>
-            <View style={styles.Group3}>
-              <View style={styles.Group1}>
-                <TouchableOpacity onPress={() => setPage('ChooseCourse')}>
-                  <Text style={styles.MakeNewPrediction}>Make new prediction</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-            <View style={styles.Group2}>
-              <TouchableOpacity onPress={() => setPage('tutorial')}>
-                <Text style={styles.HowDoesItWork}>How does it work?</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={styles.HomeButtonContainer} onPress={() => setPage('ChooseCourse')}>
+              <Text style={styles.HomePredictionText}>Make new prediction</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.HomeLink} onPress={() => setPage('tutorial')}>
+              <Text style={styles.HomeHowDoesItWorkText}>How does it work?</Text>
+            </TouchableOpacity>
           </View>
         </View>
+      </ImageBackground>
     )
   }
 
   if (page === 'tutorial') {
     return (
-        <View style={styles.Frame2}>
-          <View style={styles.Group997}>
-            <Text style={styles.HowDoesOurApplicatio}>
-              How does our application work?
-            </Text>
-          </View>
-          <View style={styles.Group998}>
-            <Text style={styles.WhatDoesItDoThisAppl}>What does it do?</Text>
-            <Text style={styles.Subtext}>
-              This application predicts your future exam scores based on your
-              unique characteristics and study habits and provides personalized
-              suggestions on how to improve your performance.
-            </Text>
-            <Text style={styles.WhatDoesItDoThisAppl}>How does it work?</Text>
-            <Text style={styles.Subtext}>
-              Step 1: Choose the course for which you want to predict your exam
-              score
-            </Text>
-            <Text style={styles.Subtext}>
-              Step 2: Enter relevant information. about yourself and your study
-              habits.
-            </Text>
-            <Text style={styles.Subtext}>
-              Step 3: The model generates a predicted score and explains how your
-              characteristics and habits influenced the result.
-            </Text>
-            <Text style={styles.Subtext}>
-              Step 4: Receive tailored suggestions on how to boost your score and
-              perform better on your exams.
-            </Text>
-            <Text style={styles.WhatDoesItDoThisAppl}>Why it is useful?</Text>
-            <Text style={styles.Subtext}>
-              It helps you to identify your strengths and weaknesses and gives
-              actionable advice to optimize your study efforts and improve your
-              results.
-            </Text>
-          </View>
-          <View style={styles.BackButtonContainer}>
-            <TouchableOpacity onPress={() => setPage('home')}>
-              <Text style={styles.Back}>Back</Text>
-            </TouchableOpacity>
-          </View>
+      <View style={styles.topContainer}>
+        <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('home')}>
+          <Text style={styles.ButtonText}>Back</Text>
+        </TouchableOpacity>
+        <View style={styles.TutorialContainer}>
+          <Text style={styles.SmallTitle}>
+            How does our application work?
+          </Text>
+          
+          <ScrollView contentContainerStyle={styles.Input_container}>
+            <View style={styles.Group998}>
+              <Text style={styles.WhatDoesItDoThisAppl}>What does it do?</Text>
+              <Text style={styles.Subtext}>
+                This application predicts your future exam scores based on your
+                unique characteristics and study habits and provides personalized
+                suggestions on how to improve your performance.
+              </Text>
+              <Text style={styles.WhatDoesItDoThisAppl}>How does it work?</Text>
+              <Text style={styles.Subtext}>
+                Step 1: Choose the course for which you want to predict your exam
+                score
+              </Text>
+              <Text style={styles.Subtext}>
+                Step 2: Enter relevant information. about yourself and your study
+                habits.
+              </Text>
+              <Text style={styles.Subtext}>
+                Step 3: The model generates a predicted score and explains how your
+                characteristics and habits influenced the result.
+              </Text>
+              <Text style={styles.Subtext}>
+                Step 4: Receive tailored suggestions on how to boost your score and
+                perform better on your exams.
+              </Text>
+              <Text style={styles.WhatDoesItDoThisAppl}>Why it is useful?</Text>
+              <Text style={styles.Subtext}>
+                It helps you to identify your strengths and weaknesses and gives
+                actionable advice to optimize your study efforts and improve your
+                results.
+              </Text>
+            </View>
+          </ScrollView>
         </View>
+      </View>
     );
   }
 
   if (page === 'ChooseCourse') {
-    // TODO: add saving and selection of presaved templates
     return (      
     <View style={styles.topContainer}>
       <View style={styles.ButtonBG}>
         <TouchableOpacity onPress={() => setPage('home')}>
-          <Text style={styles.Back}>Back</Text>
+          <Text style={styles.ButtonText}>Back</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.CSContainer}>
@@ -334,12 +336,15 @@ const App: FC = () => {
           <Text style={styles.BoldText}>
             Overview of previous predictions
           </Text>
+          <Text style={styles.ButtonText}>
+            (Pick one to load the inputs)
+          </Text>
           <View style={styles.CSTableContainer}>
             {/* Overview here */}
 
             <View style={styles.coursesListContainer}>
               {allCourses.length === 0 ? ( // Check if the array is empty
-                  <Text style={styles.emptyMessage}>No predictions made yet</Text> // Display a message
+                  <Text style={styles.CSPlaceholderMessage}>No predictions made yet</Text> // Display a message
               ) : (
                   <FlatList
                       data={allCourses}
@@ -351,13 +356,13 @@ const App: FC = () => {
             </View>
         </View>
       </View>
-      <View style={styles.CSButtons}>
+      <View style={styles.CSBottomContainer}>
         <View style={styles.CSSelected}>
           <Text style={styles.BoldText}>You selected: {currentCourse}</Text>
         </View>
         <View style={styles.ButtonBG}>
           <TouchableOpacity onPress={handleCourseSelection}>
-            <Text style={styles.continueText}>Continue</Text>
+            <Text style={styles.ButtonText}>Continue</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -370,11 +375,11 @@ const App: FC = () => {
       <View style={styles.topContainer}>
           <View style={styles.ButtonBG}>
             <TouchableOpacity onPress={() => setPage('ChooseCourse')}>
-              <Text style={styles.Back}>Back</Text>
+              <Text style={styles.ButtonText}>Back</Text>
             </TouchableOpacity>
           </View>
         <ScrollView contentContainerStyle={styles.Input_container}>
-          <Text style={styles.Input_title}>Please provide following details for the selected course</Text>
+          <Text style={styles.SmallTitle}>Please provide following details for the selected course</Text>
           {renderSlider(
               'How many hours do you study per week (excluding classes) for this course?',
               formData['Hours_Studied'],
@@ -464,7 +469,7 @@ const App: FC = () => {
           
           <View style={styles.ButtonBG}>
           <TouchableOpacity onPress={handlePredict}>
-            <Text style={styles.continueText}>Continue</Text>
+            <Text style={styles.ButtonText}>Continue</Text>
           </TouchableOpacity>
         </View>
         </ScrollView>
@@ -534,7 +539,7 @@ const App: FC = () => {
           {/* Back Button */}
           <View style={styles.BackButtonContainer}>
             <TouchableOpacity onPress={() => setPage('input')}>
-              <Text style={styles.Back}>Back</Text>
+              <Text style={styles.ButtonText}>Back</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -547,7 +552,7 @@ const App: FC = () => {
           {/* Header with Back Button */}
           <View  style={styles.BackButtonContainer}>
             <TouchableOpacity onPress={() => setPage('prediction')}>
-              <Text style={styles.Back}>Back</Text>
+              <Text style={styles.ButtonText}>Back</Text>
             </TouchableOpacity>
           </View>
           <Text style={styles.title_margin_top}>Expected score: {prediction}%</Text>
@@ -576,7 +581,7 @@ const App: FC = () => {
           {/* Back button */}
           <View style={styles.BackButtonContainer}>
             <TouchableOpacity onPress={() => setPage('prediction')}>
-              <Text style={styles.Back}>Back</Text>
+              <Text style={styles.ButtonText}>Back</Text>
             </TouchableOpacity>
           </View>
 
@@ -682,7 +687,7 @@ const App: FC = () => {
           </View>
           <View style={styles.BackButtonContainer}>
             <TouchableOpacity onPress={() => setPage('prediction')}>
-              <Text style={styles.Back}>Back</Text>
+              <Text style={styles.ButtonText}>Back</Text>
             </TouchableOpacity>
           </View>
         </View>

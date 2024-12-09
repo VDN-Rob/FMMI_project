@@ -3,7 +3,16 @@ const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     // General
-    topContainer: {flex: 1, flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start'},
+    background: {
+        flex: 1,
+        resizeMode: 'cover',
+    },
+    topContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start'
+    },
     ButtonBG: {
         width: 0.3 * width,
         height: 0.05 * height,
@@ -13,7 +22,7 @@ const styles = StyleSheet.create({
         margin: 10,
         borderRadius: 20
     },
-    Back: {
+    ButtonText: {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -30,6 +39,160 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         margin: 10
     },
+    continueText: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        color: "rgba(0,0,0,1)",
+        fontSize: 20,
+        lineHeight: 20,
+        fontFamily: "Inter, sans-serif",
+        fontWeight: "400",
+        textAlign: "center",
+    },
+    SmallTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', paddingTop: 20 },
+
+
+    // Page home
+    HomeTopContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingLeft: 0.1 * width, // 10% of screen width
+        paddingRight: 0.1 * width,
+        paddingTop: 0.20 * height, // 20% of screen height
+        paddingBottom: 0.3 * height,
+    },
+    HomeContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingLeft: 0.1 * width, // 10% of screen width
+        paddingRight: 0.1 * width,
+        paddingTop: 0.1 * height, // 20% of screen height
+        paddingBottom: 0.1 * height,
+        height: 0.70 * height,
+        backgroundColor: 'rgba(255,255,255,0.75)',
+        borderRadius: 50
+    },
+    HomeMainTitle: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        color: 'rgba(0,0,0,1)',
+        fontSize: 34,
+        lineHeight: 34,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '400',
+        textAlign: 'center',
+        marginBottom: 25,
+    },
+    HomeSubtitle: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        color: 'rgba(0,0,0,1)',
+        fontSize: 18,
+        lineHeight: 18,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '400',
+        textAlign: 'center',
+        marginBottom: 75,
+    },
+    HomeButtonContainer: {
+        width: '100%',
+        paddingLeft: 0.1 * width,
+        paddingRight: 0.1 * width,
+        paddingTop: 18,
+        paddingBottom: 18,
+        backgroundColor: 'rgba(44,17,252,0.2)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 20
+    },
+    HomePredictionText: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        color: 'rgba(0,0,0,1)',
+        fontSize: 28,
+        lineHeight: 28,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '400',
+        textAlign: 'center',
+    },
+    HomeLink: {
+        width: '100%',
+        paddingLeft: 15,
+        paddingRight: 15,
+        paddingTop: 14,
+        paddingBottom: 31,
+        marginBottom: 0, // Ruimte tussen de knoppen
+    },
+    HomeHowDoesItWorkText: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        color: 'rgba(0,0,0,1)',
+        fontSize: 20,
+        lineHeight: 20,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '400',
+        textAlign: 'center',
+        textDecorationLine: 'underline',
+    },
+
+    // Page tutorial
+    TutorialContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    Group998: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '90%',
+        paddingLeft: '10%',
+        // boxSizing: 'border-box',
+
+    },
+    WhatDoesItDoThisAppl: {
+        color: 'rgba(0,0,0,1)',
+        fontSize: 16,
+        lineHeight: 16,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '700',
+        textAlign: 'left',
+        paddingLeft: 0,
+        marginBottom: 10,
+        marginTop: 20,
+    },
+    BackButtonContainer: {
+        width: 100,
+        height: 41,
+        position: 'absolute', // Hiermee zet je het element uit de normale flow
+        top: 0.05 * height, // Plaatst de knop aan de bovenkant
+        left: 0,
+        backgroundColor: 'rgba(44,17,252,0.08)',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    Subtext: {
+        display: 'flex',
+        flexDirection: 'column',
+        color: 'rgba(0,0,0,1)',
+        fontSize: 16,
+        lineHeight: 16,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '400',
+        textAlign: 'left',
+        marginBottom: 5,
+        paddingLeft: 0,
+    },
+
 
     // Page Course selection
     CSContainer: {
@@ -39,21 +202,25 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: '100%',
         height: '100%',
-        padding: 20,
         backgroundColor: "rgba(255,255,255,1)",
-        maxHeight: 0.7 * height
+        maxHeight: 0.65 * height
     },
     CSTableContainer: {
         width: "90%",
-        height: "50%",
+        height: "40%",
         paddingLeft: 25,
         paddingRight: 40,
-        paddingTop: 19,
         paddingBottom: 50,
         borderWidth: 2,
         borderColor: "rgba(0,0,0,0)",
     },
-    CSButtons: {
+    CSPlaceholderMessage: {
+        fontSize: 16,
+        color: 'gray',
+        textAlign: 'center',
+        marginTop: 20,
+    },
+    CSBottomContainer: {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -63,17 +230,18 @@ const styles = StyleSheet.create({
     },
     CSSelected: {
         width: 0.9 * width,
-        height: 0.05 * height,
+        height: 0.075 * height,
         backgroundColor: "rgba(44,17,252,0.08)",
         alignItems: 'flex-start',
         justifyContent: 'center',
         margin: 10,
-        borderRadius: 20
+        borderRadius: 20,
+        borderColor: "rgba(0,0,0,1)",
+        borderWidth: 1
     },
 
     // Page input
     Input_container: { flexGrow: 1, padding: 20, paddingBottom: 100 },
-    Input_title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', paddingTop: 20 },
     sliderContainer: {
         marginVertical: 10,
         padding: 10,
@@ -89,25 +257,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#555',
         textAlign: 'center',
-    },
-    continueText: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        color: "rgba(0,0,0,1)",
-        fontSize: 20,
-        lineHeight: 20,
-        fontFamily: "Inter, sans-serif",
-        fontWeight: "400",
-        textAlign: "center",
-    },
-
-
-    emptyMessage: {
-        fontSize: 16,
-        color: 'gray',
-        textAlign: 'center',
-        marginTop: 20,
     },
     container2: {
         flex: 1,
@@ -180,175 +329,6 @@ const styles = StyleSheet.create({
         fontWeight: '400',    // Keeps the text weight balanced and not too bold
     },
     
-    Frame1: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        width: '90%',
-        height: '80%',
-        paddingLeft: 0.2 * width, // 10% of screen width
-        paddingRight: 0.1 * width,
-        paddingTop: 0.2 * height, // 20% of screen height
-        paddingBottom: 0.3 * height,
-        backgroundColor: 'rgba(255,255,255,1)',
-    },
-    Group018: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        width: '100%',
-        height: '100%',
-    },
-    StudentPerformancePr: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        color: 'rgba(0,0,0,1)',
-        fontSize: 34,
-        lineHeight: 34,
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: '400',
-        textAlign: 'center',
-        marginBottom: 20, // Voegt ruimte onder de tekst toe
-    },
-    ToPredictAndImproveY: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        color: 'rgba(0,0,0,1)',
-        fontSize: 18,
-        lineHeight: 18,
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: '400',
-        textAlign: 'center',
-        marginBottom: 100, // Voegt ruimte onder de tekst toe
-    },
-    Group3: {
-        width: '100%',
-        backgroundColor: 'rgba(44,17,252,0.08)',
-        marginBottom: 5, // Voegt ruimte toe tussen de secties
-    },
-    Group1: {
-        width: '100%',
-        paddingLeft: 26,
-        paddingRight: 26,
-        paddingTop: 17,
-        paddingBottom: 18,
-        backgroundColor: 'rgba(44,17,252,0.08)',
-        // marginBottom: 20,  // Ruimte tussen de knoppen
-        alignItems: 'center', // Centrerende van de inhoud horizontaal
-        justifyContent: 'center',
-    },
-    MakeNewPrediction: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        color: 'rgba(0,0,0,1)',
-        fontSize: 28,
-        lineHeight: 28,
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: '400',
-        textAlign: 'center',
-    },
-    Group2: {
-        width: '100%',
-        paddingLeft: 15,
-        paddingRight: 15,
-        paddingTop: 14,
-        paddingBottom: 31,
-        backgroundColor: 'rgba(255,255,255,1)',
-        marginBottom: 0, // Ruimte tussen de knoppen
-    },
-    HowDoesItWork: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        color: 'rgba(0,0,0,1)',
-        fontSize: 20,
-        lineHeight: 20,
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: '400',
-        textAlign: 'center',
-        textDecorationLine: 'underline',
-    },
-    Frame2: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        width: '100%',
-        height: 844,
-        // paddingRight: 28,
-        // paddingBottom: 670,
-        backgroundColor: 'rgba(255,255,255,1)',
-    },
-    Group997: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        textAlign: "center",
-        paddingTop: 125,
-        paddingBottom: 50,
-        width: '100%'
-        // paddingLeft: 20,
-
-    },
-    HowDoesOurApplicatio: {
-        display: 'flex',
-        flexDirection: 'column',
-        // justifyContent: 'center',
-        color: 'rgba(0,0,0,1)',
-        fontSize: 32,
-        lineHeight: 32,
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: '400',
-        textAlign: 'center',
-        // paddingTop: 100,
-        // paddingBottom: 100,
-        width: '100%'
-    },
-    Group998: {
-        display: 'flex',
-        flexDirection: 'column',
-        width: '90%',
-        paddingLeft: '10%',
-        // boxSizing: 'border-box',
-
-    },
-    WhatDoesItDoThisAppl: {
-        color: 'rgba(0,0,0,1)',
-        fontSize: 16,
-        lineHeight: 16,
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: '700',
-        textAlign: 'left',
-        paddingLeft: 0,
-        marginBottom: 10,
-        marginTop: 20,
-    },
-    BackButtonContainer: {
-        width: 100,
-        height: 41,
-        position: 'absolute', // Hiermee zet je het element uit de normale flow
-        top: 0.05 * height, // Plaatst de knop aan de bovenkant
-        left: 0,
-        backgroundColor: 'rgba(44,17,252,0.08)',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    Subtext: {
-        display: 'flex',
-        flexDirection: 'column',
-        color: 'rgba(0,0,0,1)',
-        fontSize: 16,
-        lineHeight: 16,
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: '400',
-        textAlign: 'left',
-        marginBottom: 5,
-        paddingLeft: 0,
-    },
     ForWhichCourseDoYouW: {
         display: "flex",
         flexDirection: "column",
@@ -886,16 +866,16 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginTop: 10,
     },
-    ButtonText: { color: '#fff', fontSize: 16, textAlign: 'center' },
-    FeatureEffectContainer: {
-        width: width * 0.85,
-        padding: 10,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 10,
-        alignItems: 'center',
-        backgroundColor: '#f9f9f9',
-    },
+    // ButtonText: { color: '#fff', fontSize: 16, textAlign: 'center' },
+    // FeatureEffectContainer: {
+    //     width: width * 0.85,
+    //     padding: 10,
+    //     borderWidth: 1,
+    //     borderColor: '#ccc',
+    //     borderRadius: 10,
+    //     alignItems: 'center',
+    //     backgroundColor: '#f9f9f9',
+    // },
     NavigationButtons: {
         flexDirection: 'row',
         justifyContent: 'space-between',
