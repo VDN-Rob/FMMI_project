@@ -4,9 +4,9 @@ const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
     // General
     topContainer: {flex: 1, flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start'},
-    backButtonBG: {
-        width: 100,
-        height: 41,
+    ButtonBG: {
+        width: 0.3 * width,
+        height: 0.05 * height,
         backgroundColor: "rgba(44,17,252,0.08)",
         alignItems: "center",
         justifyContent: 'center',
@@ -25,6 +25,11 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         alignItems: 'center',
     },
+    BoldText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        margin: 10
+    },
 
     // Page Course selection
     CSContainer: {
@@ -36,9 +41,19 @@ const styles = StyleSheet.create({
         height: '100%',
         padding: 20,
         backgroundColor: "rgba(255,255,255,1)",
-        maxHeight: 0.8 * height
+        maxHeight: 0.7 * height
     },
-    Group953: {
+    CSTableContainer: {
+        width: "90%",
+        height: "50%",
+        paddingLeft: 25,
+        paddingRight: 40,
+        paddingTop: 19,
+        paddingBottom: 50,
+        borderWidth: 2,
+        borderColor: "rgba(0,0,0,0)",
+    },
+    CSButtons: {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -46,13 +61,14 @@ const styles = StyleSheet.create({
         textAlign: "center",
         width: '100%',
     },
-    CSButtons: {
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-        width: '100%',
+    CSSelected: {
+        width: 0.9 * width,
+        height: 0.05 * height,
+        backgroundColor: "rgba(44,17,252,0.08)",
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        margin: 10,
+        borderRadius: 20
     },
 
     // Page input
@@ -73,14 +89,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#555',
         textAlign: 'center',
-    },
-    Input_continue_placement: {
-        width: 100,
-        height: 41,
-        backgroundColor: "rgba(44,17,252,0.08)",
-        alignItems: "center",
-        justifyContent: 'center',
-        margin: 10
     },
     continueText: {
         display: "flex",
@@ -389,16 +397,6 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginBottom: 25,
     },
-    Group436: {
-        width: "90%",
-        height: "50%",
-        paddingLeft: 25,
-        paddingRight: 40,
-        paddingTop: 19,
-        paddingBottom: 50,
-        borderWidth: 2,
-        borderColor: "rgba(0,0,0,0)",
-    },
     HierMoetDeOverviewVa: {
         display: "flex",
         flexDirection: "column",
@@ -411,14 +409,6 @@ const styles = StyleSheet.create({
         textAlign: "center",
         paddingLeft: 25,
         // paddingRight:25,
-    },Group6: {
-        width: 115,
-        height: 41,
-        bottom: 0.1 * height,
-        left: 0.7 * width,
-        backgroundColor: "rgba(44,17,252,0.08)",
-        alignItems: "center",
-        justifyContent: "center",
     },
     Iphone13143: {
         display: "flex",
@@ -851,11 +841,6 @@ const styles = StyleSheet.create({
     backButtonText: {
         fontSize: 16,
         color: '#6200ee',
-    },
-    overviewText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 10,
     },
     coursesListContainer: {
         marginTop: 10,

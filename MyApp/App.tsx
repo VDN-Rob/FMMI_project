@@ -5,7 +5,7 @@ import CustomSlider from './CustomSlider';
 import CustomDropDown from './CustomDropDown';
 import styles from './styles';
 
-const API_URL = 'http://10.46.195.112:5000';
+const API_URL = 'http://192.168.1.46:5000';
 
 const App: FC = () => {
   const [page, setPage] = useState<string>('home'); // Dit aanpassen als jullie die als eerste pagina willen
@@ -312,7 +312,7 @@ const App: FC = () => {
     // TODO: add saving and selection of presaved templates
     return (      
     <View style={styles.topContainer}>
-      <View style={styles.backButtonBG}>
+      <View style={styles.ButtonBG}>
         <TouchableOpacity onPress={() => setPage('home')}>
           <Text style={styles.Back}>Back</Text>
         </TouchableOpacity>
@@ -331,10 +331,10 @@ const App: FC = () => {
                 onChangeText={(value) => handleStudyPointsChange(value)}
             />
           </View>
-          <Text style={styles.overviewText}>
+          <Text style={styles.BoldText}>
             Overview of previous predictions
           </Text>
-          <View style={styles.Group436}>
+          <View style={styles.CSTableContainer}>
             {/* Overview here */}
 
             <View style={styles.coursesListContainer}>
@@ -352,10 +352,10 @@ const App: FC = () => {
         </View>
       </View>
       <View style={styles.CSButtons}>
-        <View style={styles.Input_continue_placement}>
-          <Text style={styles.overviewText}>You selected: {currentCourse}</Text>
+        <View style={styles.CSSelected}>
+          <Text style={styles.BoldText}>You selected: {currentCourse}</Text>
         </View>
-        <View style={styles.Group6}>
+        <View style={styles.ButtonBG}>
           <TouchableOpacity onPress={handleCourseSelection}>
             <Text style={styles.continueText}>Continue</Text>
           </TouchableOpacity>
@@ -368,7 +368,7 @@ const App: FC = () => {
   if (page === 'input') {
     return (
       <View style={styles.topContainer}>
-          <View style={styles.backButtonBG}>
+          <View style={styles.ButtonBG}>
             <TouchableOpacity onPress={() => setPage('ChooseCourse')}>
               <Text style={styles.Back}>Back</Text>
             </TouchableOpacity>
@@ -462,7 +462,7 @@ const App: FC = () => {
           )}
           {renderDropdown('What is your gender?', 'Gender', dropdownOptions.gender)}
           
-          <View style={styles.Input_continue_placement}>
+          <View style={styles.ButtonBG}>
           <TouchableOpacity onPress={handlePredict}>
             <Text style={styles.continueText}>Continue</Text>
           </TouchableOpacity>
