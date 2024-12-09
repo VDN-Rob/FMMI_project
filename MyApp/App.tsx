@@ -314,11 +314,9 @@ const App: FC = () => {
   if (page === 'ChooseCourse') {
     return (      
     <View style={styles.topContainer}>
-      <View style={styles.ButtonBG}>
-        <TouchableOpacity onPress={() => setPage('home')}>
-          <Text style={styles.ButtonText}>Back</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('home')}>
+        <Text style={styles.ButtonText}>Back</Text>
+      </TouchableOpacity>
       <View style={styles.CSContainer}>
           <View style={styles.ForWhichCourseDoYouW}>
             {renderCourseInputField("For which course do you want to make a prediction?", "Enter your course here")}
@@ -360,11 +358,9 @@ const App: FC = () => {
         <View style={styles.CSSelected}>
           <Text style={styles.BoldText}>You selected: {currentCourse}</Text>
         </View>
-        <View style={styles.ButtonBG}>
-          <TouchableOpacity onPress={handleCourseSelection}>
-            <Text style={styles.ButtonText}>Continue</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={styles.ButtonBG} onPress={handleCourseSelection}>
+          <Text style={styles.ButtonText}>Continue</Text>
+        </TouchableOpacity>
       </View>
     </View>
     )
