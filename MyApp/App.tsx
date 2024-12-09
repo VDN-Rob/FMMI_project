@@ -369,11 +369,9 @@ const App: FC = () => {
   if (page === 'input') {
     return (
       <View style={styles.topContainer}>
-          <View style={styles.ButtonBG}>
-            <TouchableOpacity onPress={() => setPage('ChooseCourse')}>
-              <Text style={styles.ButtonText}>Back</Text>
-            </TouchableOpacity>
-          </View>
+        <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('ChooseCourse')}>
+          <Text style={styles.ButtonText}>Back</Text>
+        </TouchableOpacity>
         <ScrollView contentContainerStyle={styles.Input_container}>
           <Text style={styles.SmallTitle}>Please provide following details for the selected course</Text>
           {renderSlider(
@@ -463,11 +461,9 @@ const App: FC = () => {
           )}
           {renderDropdown('What is your gender?', 'Gender', dropdownOptions.gender)}
           
-          <View style={styles.ButtonBG}>
-          <TouchableOpacity onPress={handlePredict}>
+          <TouchableOpacity style={styles.ButtonBG} onPress={handlePredict}>
             <Text style={styles.ButtonText}>Continue</Text>
           </TouchableOpacity>
-        </View>
         </ScrollView>
         
       </View>
