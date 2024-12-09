@@ -310,63 +310,65 @@ const App: FC = () => {
 
   if (page === 'ChooseCourse') {
     // TODO: add saving and selection of presaved templates
-    return (
-        <View style={styles.Iphone13141}>
-          <View style={styles.Group953}>
-            <View style={styles.ForWhichCourseDoYouW}>
-              {renderCourseInputField("For which course do you want to make a prediction?", "Enter your course here")}
-            </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.label_sp}>{"Study points"}</Text>
-              <TextInput
-                  style={styles.input_sp}
-                  placeholder={"e.g. 6"}
-                  value={studyPoints}
-                  keyboardType={'default'}
-                  onChangeText={(value) => handleStudyPointsChange(value)}
-              />
-            </View>
-            <Text style={styles.overviewText}>
-              Overview of previous predictions
-            </Text>
-            <View style={styles.Group436}>
-              {/* Overview here */}
+    return (      
+    <View style={styles.topContainer}>
+      <View style={styles.backButtonBG}>
+        <TouchableOpacity onPress={() => setPage('home')}>
+          <Text style={styles.Back}>Back</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.CSContainer}>
+          <View style={styles.ForWhichCourseDoYouW}>
+            {renderCourseInputField("For which course do you want to make a prediction?", "Enter your course here")}
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.label_sp}>{"Study points"}</Text>
+            <TextInput
+                style={styles.input_sp}
+                placeholder={"e.g. 6"}
+                value={studyPoints}
+                keyboardType={'default'}
+                onChangeText={(value) => handleStudyPointsChange(value)}
+            />
+          </View>
+          <Text style={styles.overviewText}>
+            Overview of previous predictions
+          </Text>
+          <View style={styles.Group436}>
+            {/* Overview here */}
 
-              <View style={styles.coursesListContainer}>
-                {allCourses.length === 0 ? ( // Check if the array is empty
-                    <Text style={styles.emptyMessage}>No predictions made yet</Text> // Display a message
-                ) : (
-                    <FlatList
-                        data={allCourses}
-                        renderItem={renderCourseItem}
-                        keyExtractor={(item) => item}
-                        extraData={currentCourse} // To re-render when currentCourse changes
-                    />
-                )}
-              </View>
+            <View style={styles.coursesListContainer}>
+              {allCourses.length === 0 ? ( // Check if the array is empty
+                  <Text style={styles.emptyMessage}>No predictions made yet</Text> // Display a message
+              ) : (
+                  <FlatList
+                      data={allCourses}
+                      renderItem={renderCourseItem}
+                      keyExtractor={(item) => item}
+                      extraData={currentCourse} // To re-render when currentCourse changes
+                  />
+              )}
             </View>
-          </View>
-          <View style={styles.Group615}>
-            <Text style={styles.overviewText}>You selected: {currentCourse}</Text>
-          </View>
-          <View style={styles.Group6}>
-            <TouchableOpacity onPress={handleCourseSelection}>
-              <Text style={styles.Continue}>Continue</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.BackButtonContainer}>
-            <TouchableOpacity onPress={() => setPage('home')}>
-              <Text style={styles.Back}>Back</Text>
-            </TouchableOpacity>
-          </View>
         </View>
+      </View>
+      <View style={styles.CSButtons}>
+        <View style={styles.Input_continue_placement}>
+          <Text style={styles.overviewText}>You selected: {currentCourse}</Text>
+        </View>
+        <View style={styles.Group6}>
+          <TouchableOpacity onPress={handleCourseSelection}>
+            <Text style={styles.continueText}>Continue</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
     )
   }
 
   if (page === 'input') {
     return (
-      <View style={styles.Input_top_container}>
-          <View style={styles.Group61}>
+      <View style={styles.topContainer}>
+          <View style={styles.backButtonBG}>
             <TouchableOpacity onPress={() => setPage('ChooseCourse')}>
               <Text style={styles.Back}>Back</Text>
             </TouchableOpacity>
@@ -459,12 +461,14 @@ const App: FC = () => {
               dropdownOptions.yn
           )}
           {renderDropdown('What is your gender?', 'Gender', dropdownOptions.gender)}
-          <View style={styles.Group615}>
-            <TouchableOpacity onPress={handlePredict}>
-              <Text style={styles.Continue}>Continue</Text>
-            </TouchableOpacity>
-          </View>
+          
+          <View style={styles.Input_continue_placement}>
+          <TouchableOpacity onPress={handlePredict}>
+            <Text style={styles.continueText}>Continue</Text>
+          </TouchableOpacity>
+        </View>
         </ScrollView>
+        
       </View>
 
     );

@@ -2,8 +2,60 @@ import { Dimensions, StyleSheet } from 'react-native';
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+    // General
+    topContainer: {flex: 1, flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start'},
+    backButtonBG: {
+        width: 100,
+        height: 41,
+        backgroundColor: "rgba(44,17,252,0.08)",
+        alignItems: "center",
+        justifyContent: 'center',
+        margin: 10,
+        borderRadius: 20
+    },
+    Back: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        color: 'rgba(0,0,0,1)',
+        fontSize: 20,
+        lineHeight: 20,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '400',
+        textAlign: 'center',
+        alignItems: 'center',
+    },
+
+    // Page Course selection
+    CSContainer: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        width: '100%',
+        height: '100%',
+        padding: 20,
+        backgroundColor: "rgba(255,255,255,1)",
+        maxHeight: 0.8 * height
+    },
+    Group953: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        width: '100%',
+    },
+    CSButtons: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        width: '100%',
+    },
+
     // Page input
-    Input_top_container: {flex: 1, flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start'},
     Input_container: { flexGrow: 1, padding: 20, paddingBottom: 100 },
     Input_title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', paddingTop: 20 },
     sliderContainer: {
@@ -22,13 +74,24 @@ const styles = StyleSheet.create({
         color: '#555',
         textAlign: 'center',
     },
-    Group61: {
+    Input_continue_placement: {
         width: 100,
         height: 41,
         backgroundColor: "rgba(44,17,252,0.08)",
         alignItems: "center",
         justifyContent: 'center',
         margin: 10
+    },
+    continueText: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        color: "rgba(0,0,0,1)",
+        fontSize: 20,
+        lineHeight: 20,
+        fontFamily: "Inter, sans-serif",
+        fontWeight: "400",
+        textAlign: "center",
     },
 
 
@@ -266,18 +329,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    Back: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        color: 'rgba(0,0,0,1)',
-        fontSize: 20,
-        lineHeight: 20,
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: '400',
-        textAlign: 'center',
-        alignItems: 'center',
-    },
     Subtext: {
         display: 'flex',
         flexDirection: 'column',
@@ -289,25 +340,6 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         marginBottom: 5,
         paddingLeft: 0,
-    },
-    Iphone13141: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        alignItems: "flex-start",
-        width: '100%',
-        height: '100%',
-        // paddingRight: 26,
-        // paddingBottom: 27,
-        backgroundColor: "rgba(255,255,255,1)",
-    },
-    Group953: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-        width: '100%',
     },
     ForWhichCourseDoYouW: {
         display: "flex",
@@ -387,24 +419,6 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(44,17,252,0.08)",
         alignItems: "center",
         justifyContent: "center",
-    },
-    Group615: {
-        width: 0.5 * width,
-        bottom: 0.05 * height,
-        left: 0.1 * width,
-        alignItems: "baseline",
-        justifyContent: "center",
-    },
-    Continue: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        color: "rgba(0,0,0,1)",
-        fontSize: 20,
-        lineHeight: 20,
-        fontFamily: "Inter, sans-serif",
-        fontWeight: "400",
-        textAlign: "center",
     },
     Iphone13143: {
         display: "flex",
