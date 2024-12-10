@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
         alignItems: 'center',
-        height: 100,
+        height: 50,
     },
     track: {
         height: 4,
@@ -140,7 +140,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     valueText: {
-        marginTop: 10,
         fontSize: 16,
         fontWeight: 'bold',
     },
