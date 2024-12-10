@@ -233,9 +233,11 @@ def plot_waterfalls():
         for shap_val in shap_values_5:
             y_values.append(shap_val)
             cumulative_value += shap_val
+            values_5.append(cumulative_value)
 
         y_values.append(other_values_5)
         cumulative_value += other_values_5
+        values_5.append(cumulative_value)
 
         # X-axis labels
         x_5 = ["Base Value"] + list(feature_names_5) + ["Other factors"] + ["Predicted score"]
@@ -257,7 +259,7 @@ def plot_waterfalls():
             xaxis_title="Features",
             yaxis_title="Score",
             showlegend=False,
-            yaxis=dict(range=[min(values_5) - 10, max(values_5) + 10])
+            yaxis=dict(range=[min(values_5) - 5, max(values_5) + 5])
         )
 
         # Save the figure as a PNG file
@@ -281,6 +283,7 @@ def plot_waterfalls():
         for shap_val in shap_values_19:
             y_values.append(shap_val)
             cumulative_value += shap_val
+            values_19.append(cumulative_value)
 
         # X-axis labels
         x_19 = [base_value_19] + y_values[1:] + [cumulative_value]
@@ -304,7 +307,7 @@ def plot_waterfalls():
             yaxis_title="Features",  # Switch labels for vertical orientation
             xaxis_title="Score",
             showlegend=False,
-            xaxis=dict(range=[min(values_19) - 10, max(values_19) + 10])  # Adjust x-axis (now vertical range)
+            xaxis=dict(range=[min(values_19) - 5, max(values_19) + 5])  # Adjust x-axis (now vertical range)
         )
 
         # TODO: reverse graph to top-bottom

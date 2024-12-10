@@ -287,8 +287,7 @@ const styles = StyleSheet.create({
     },
     container2: {
         flex: 1,
-        backgroundColor: '#rgba(255,255,255,1)', // Background color for the page
-        padding: 16, // Padding around the content
+        backgroundColor: '#rgba(255,255,255,1)',
     },
 
     // Header container
@@ -442,8 +441,8 @@ const styles = StyleSheet.create({
         fontFamily: "Inter, sans-serif",
         fontWeight: "400",
         textAlign: "center",
-        marginTop: 110,
         alignItems: "center",
+        top: 0.075 * height
     },
     Group356: {
         width: "100%",

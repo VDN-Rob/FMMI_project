@@ -537,11 +537,9 @@ const App: FC = () => {
     return (
         <View style={styles.container2}>
           {/* Header with Back Button */}
-          <View  style={styles.BackButtonContainer}>
-            <TouchableOpacity onPress={() => setPage('prediction')}>
-              <Text style={styles.ButtonText}>Back</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('prediction')}>
+            <Text style={styles.ButtonText}>Back</Text>
+          </TouchableOpacity>
           <Text style={styles.title_margin_top}>Expected score: {prediction}%</Text>
 
           {/* Chart Section */}
