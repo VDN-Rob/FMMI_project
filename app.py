@@ -142,7 +142,6 @@ def train_model(X_train, y_train):
 def plot_feature_effect(feature_name):
     try:
         step = 1
-        print(feature_name)
         user_input_copy = deepcopy(user_input)
         user_input_copy.pop("Study_Points", None)  # Remove "Study_Points" if it exists; do nothing otherwise
         
@@ -475,7 +474,6 @@ def api_submit_course():
     global defaults, course_selection, current_course
 
     course = request.json.get('course')
-    print(shap.__version__)
     current_course = course
     if course in course_selection.keys():
         return course_selection[course]
@@ -503,7 +501,7 @@ def api_get_explanation():
         features = exp.feature_names if isinstance(exp.feature_names, list) else exp.feature_names.tolist()
         values = exp.values if isinstance(exp.values, list) else exp.values.tolist()
         base_value = exp.base_values if isinstance(exp.base_values, list) else exp.base_values.tolist()
-        print(values)
+
         return jsonify({
             "defaults": deepcopy(defaults), 
             "explanation": {
