@@ -58,12 +58,12 @@ const App: FC = () => {
     Study_Points: 'The amount of study points this course is',
   };
 
-  const featuresList = [
+  const [featuresList, setFeatureList] = useState<string[]>([
     "Hours_Studied", "Attendance", "Parental_Involvement", "Sleep_Hours",
     "Extracurricular_Activities", "Previous_Scores", "Motivation_Level",
     "Tutoring_Sessions", "Family_Income", "Teacher_Quality", "Peer_Influence",
     "Physical_Activity", "Distance_from_Home", "Gender", "Learning_Disabilities"
-  ];
+  ]);
 
   const [prediction, setPrediction] = useState<number | null>(null);
   const [chartUrl, setChartUrl] = useState<Record<string, any>>({
@@ -72,10 +72,7 @@ const App: FC = () => {
   });
 
   const [plots, setPlots] = useState<Record<string, any>>({});
-
   const [explanation, setExplanation] = useState<Record<string, any>>();
-
-  
 
   const dropdownOptions = {
     lmh: [
@@ -104,6 +101,7 @@ const App: FC = () => {
   };
 
   const [currentFeature, setCurrentFeature] = useState(0);
+  const featureName = featuresList[currentFeature];
 
   const handleNextFeature = () => {
     setCurrentFeature((prev) => (prev + 1) % featuresList.length);
@@ -112,8 +110,6 @@ const App: FC = () => {
   const handlePreviousFeature = () => {
     setCurrentFeature((prev) => (prev - 1 + featuresList.length) % featuresList.length);
   };
-
-  const featureName = featuresList[currentFeature];
 
   const handleInputChange = (key: string, value: string | number) => {
     setFormData((prevData) => ({ ...prevData, [key]: value }));
@@ -166,6 +162,7 @@ const App: FC = () => {
       setLoadingMessage('Getting explanations...');
       const response_exp = await axios.get(`${API_URL}/get_explanation`);
       setExplanation(response_exp.data);
+      setFeatureList(response_exp.data.explanation.features)
 
       setPage('prediction');
     } catch (error) {
@@ -190,7 +187,7 @@ const App: FC = () => {
   const handleCleaning = async () => {
     const response = await axios.get(`${API_URL}/handle_cleaning`);
     setPage('home')
-  }
+  }  
 
   const renderCourseInputField = (label: string, placeholder: string, keyboardType: any = 'default') => (
       <View style={styles.inputContainer}>
@@ -204,7 +201,6 @@ const App: FC = () => {
         />
       </View>
   );
-
 
   const renderDropdown = (label: string, key: string, items: any[]) => (
       <View style={styles.inputContainer}>
@@ -547,13 +543,10 @@ const App: FC = () => {
             );
           })}
         </View>
-
-
-
-
           {/* Action Buttons */}
           <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={() => setPage('improvements')} style={styles.button}>
+            <TouchableOpacity onPress={() => {console.log(featuresList)
+              setPage('improvements')}} style={styles.button}>
               <Text style={styles.buttonText}>How to improve my result?</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setPage('DetailedGraph')} style={styles.button}>
@@ -595,15 +588,11 @@ const App: FC = () => {
 
   if (page === 'improvements') {
     return (
-        <View style={styles.container}>
+        <View style={styles.top_container_i}>
+          <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('prediction')}>
+            <Text style={styles.ButtonText}>Back</Text>
+          </TouchableOpacity>
           <Text style={styles.ExpectedScore}>Predicted score: {prediction}%</Text>
-
-          {/* Back button */}
-          <View style={styles.BackButtonContainer}>
-            <TouchableOpacity onPress={() => setPage('prediction')}>
-              <Text style={styles.ButtonText}>Back</Text>
-            </TouchableOpacity>
-          </View>
 
           {/* Scrollable feature analysis section */}
           <View style={styles.Iphone13145_i}>
@@ -635,6 +624,8 @@ const App: FC = () => {
               </View>
             </View>
           </View>
+
+          
           {/* Navigation buttons to go to the next/previous feature */}
           <View style={styles.NavigationButtons}>
             <TouchableOpacity onPress={handlePreviousFeature}>

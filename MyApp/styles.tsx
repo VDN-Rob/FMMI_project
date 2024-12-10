@@ -877,15 +877,24 @@ const styles = StyleSheet.create({
         color: '#007BFF',
         marginTop: 10,
     },
-    container_i: { flex: 1, backgroundColor: '#fff', padding: 20 },
-    ExpectedScore_i: { fontSize: 20, fontWeight: 'bold', marginBottom: 10 },
-    BackButtonContainer_i: { marginBottom: 20 },
-    Back_i: { color: '#007BFF', fontSize: 16 },
-    scrollView_i: { marginTop: 20 },
+    container_i: { flex: 1, alignContent: 'center',backgroundColor: '#fff', padding: 20 },
     Iphone13145_i: { flexDirection: 'row' },
     Group471_i: { margin: 10 },
     Group23_i: { padding: 10 },
     Group20_i: { alignItems: 'center' },
+    ExpectedScore_i: { fontSize: 20, fontWeight: 'bold', marginBottom: 10 },
+    BackButtonContainer_i: { marginBottom: 20 },
+    Back_i: { color: '#007BFF', fontSize: 16 },
+    scrollView_i: { marginTop: 20 },
+    top_container_i: { flex: 1, alignItems: 'flex-start', height: '100%'},
+    chart_container_i: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: width,
+        maxHeight: 0.5 * height,
+        backgroundColor: 'gray'
+
+    },
     FeatureTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
     ExplanationText: { fontSize: 14, marginVertical: 10, textAlign: 'center' },
     LoadingText: { fontSize: 14, fontStyle: 'italic', marginVertical: 10 },
@@ -911,6 +920,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         width: width * 0.95,
         marginTop: 20,
+        left: 0.025*width
     },
     NavButtonText: {
         fontSize: 16,
