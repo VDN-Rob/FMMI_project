@@ -5,7 +5,7 @@ import CustomSlider from './CustomSlider';
 import CustomDropDown from './CustomDropDown';
 import styles from './styles';
 
-const API_URL = 'http://192.168.1.46:5000';
+const API_URL = 'https://8c31-2a01-cb0d-11b-4b00-545e-59cd-7fee-3ca3.ngrok-free.app';
 
 const App: FC = () => {
   const [page, setPage] = useState<string>('home'); // Dit aanpassen als jullie die als eerste pagina willen
@@ -15,6 +15,7 @@ const App: FC = () => {
   const [currentCourse, setCurrentCourse] = useState<string>('');
   const [studyPoints, setStudyPoints] = useState<string>('30');
   const [allCourses, setAllCourses] = useState<string[]>([]);
+  let [l, setL] = useState(19);
 
   const handleCourseSelect = (course: string) => {
     setCurrentCourse(course);
@@ -62,8 +63,9 @@ const App: FC = () => {
     "Hours_Studied", "Attendance", "Parental_Involvement", "Sleep_Hours",
     "Extracurricular_Activities", "Previous_Scores", "Motivation_Level",
     "Tutoring_Sessions", "Family_Income", "Teacher_Quality", "Peer_Influence",
-    "Physical_Activity", "Distance_from_Home", "Gender", "Learning_Disabilities"
-  ]);
+    "Physical_Activity", "Distance_from_Home", "Gender", "Learning_Disabilities", 
+    "School_Type", "Parental_Education_Level", "Internet_Access", "Access_to_Resources"
+    ]);
 
   const [prediction, setPrediction] = useState<number | null>(null);
   const [chartUrl, setChartUrl] = useState<Record<string, any>>({
@@ -162,7 +164,8 @@ const App: FC = () => {
       setLoadingMessage('Getting explanations...');
       const response_exp = await axios.get(`${API_URL}/get_explanation`);
       setExplanation(response_exp.data);
-      setFeatureList(response_exp.data.explanation.features)
+      setFeatureList(response_exp.data.explanation.features) // TOKNOW: remove if not sorting by relevance
+      setL(featuresList.length)
 
       setPage('prediction');
     } catch (error) {
@@ -592,21 +595,20 @@ const App: FC = () => {
           <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('prediction')}>
             <Text style={styles.ButtonText}>Back</Text>
           </TouchableOpacity>
-          <Text style={styles.ExpectedScore}>Predicted score: {prediction}%</Text>
-
+          <View style={styles.center}>
+            <Text style={styles.ExpectedScore}>Predicted score: {prediction}%</Text>
+          </View>
+          
           {/* Scrollable feature analysis section */}
           <View style={styles.Iphone13145_i}>
             <View style={styles.Group471_i}>
               <View style={styles.Group23_i}>
                 <View style={styles.Group20_i}>
-                  <Text style={styles.FeatureTitle}>Feature Impact Analysis</Text>
+                  <Text style={styles.FeatureTitle}>Feature Impact Analysis of: <Text style={styles.FeatureName}>{featureName}</Text></Text>
 
                   {/* Check if the current feature exists in the plots */}
                   {plots[featureName] ? (
                       <>
-                        {/* Feature name */}
-                        <Text style={styles.FeatureName}>{featureName}</Text>
-
                         {/* Container for graph and text */}
                         <Text style={styles.ExplanationText}>{plots[featureName].explanation}</Text>
                         {plots[featureName].url && (
@@ -628,12 +630,12 @@ const App: FC = () => {
           
           {/* Navigation buttons to go to the next/previous feature */}
           <View style={styles.NavigationButtons}>
-            <TouchableOpacity onPress={handlePreviousFeature}>
-              <Text style={styles.NavButtonText}>Previous</Text>
+            <TouchableOpacity style={styles.ButtonBG} onPress={handlePreviousFeature}>
+              <Text style={styles.ButtonText}>Previous</Text>
             </TouchableOpacity>
-            <Text> {currentFeature+1}/15</Text>
-            <TouchableOpacity onPress={handleNextFeature}>
-              <Text style={styles.NavButtonText}>Next</Text>
+            <Text> {currentFeature+1}/{l}</Text>
+            <TouchableOpacity style={styles.ButtonBG} onPress={handleNextFeature}>
+              <Text style={styles.ButtonText}>Next</Text>
             </TouchableOpacity>
           </View>
         </View>

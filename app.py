@@ -1,9 +1,5 @@
-import base64
 from copy import deepcopy
-import io
-import tempfile
-import traceback
-from flask import Flask, request, jsonify, send_file, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory
 import matplotlib
 import pandas as pd
 import numpy as np
@@ -16,8 +12,6 @@ import matplotlib.pyplot as plt
 matplotlib.use('Agg')
 import os
 import plotly.graph_objects as go
-from plotly.offline import plot
-import kaleido
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -57,7 +51,8 @@ featuresList = [
     "Hours_Studied", "Attendance", "Parental_Involvement", "Sleep_Hours",
     "Extracurricular_Activities", "Previous_Scores", "Motivation_Level",
     "Tutoring_Sessions", "Family_Income", "Teacher_Quality", "Peer_Influence",
-    "Physical_Activity", "Distance_from_Home", "Gender", "Learning_Disabilities"
+    "Physical_Activity", "Distance_from_Home", "Gender", "Learning_Disabilities", 
+    "School_Type", "Parental_Education_Level", "Internet_Access", "Access_to_Resources"
     ]
 
 # Store user data
@@ -178,7 +173,7 @@ def plot_feature_effect(feature_name):
         # Create the plot
         plt.figure(figsize=(10, 6))
         plt.plot(feature_range, predicted_scores, marker='o', linestyle='-')
-        plt.title(f"Effect of {feature_name} on Predicted Output")
+        plt.title(f"Effect of {feature_name} on Predicted Score")
         plt.xlabel(feature_name)
         plt.ylabel("Predicted Output")
         plt.grid(True)
@@ -195,7 +190,7 @@ def plot_feature_effect(feature_name):
         plt.savefig(chart_path)
         plt.close()
 
-        # Add explanation text
+        # Add explanation text TODO
         explanation = f"The feature '{feature_name}' has been analyzed. The graph shows how varying its values influences the predicted output."
 
         return (chart_path, explanation)
@@ -212,9 +207,9 @@ def plot_waterfalls():
             raise ValueError("SHAP values must be a shap.Explanation object.")
         
         # Extract data for the Plotly waterfall chart
-        feature_names_5 = shap_explanation.feature_names[:6]
-        shap_values_5 = shap_explanation.values[:6]
-        other_values_5 = np.sum(shap_explanation.values[6:])
+        feature_names_5 = shap_explanation.feature_names[:5]
+        shap_values_5 = shap_explanation.values[:5]
+        other_values_5 = np.sum(shap_explanation.values[5:])
         base_value_5 = shap_explanation.base_values[0]
 
         # Prepare data for the waterfall plot
