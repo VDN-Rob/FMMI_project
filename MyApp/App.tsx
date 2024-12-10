@@ -5,7 +5,7 @@ import CustomSlider from './CustomSlider';
 import CustomDropDown from './CustomDropDown';
 import styles from './styles';
 
-const API_URL = 'http://192.168.1.46:5000';
+const API_URL = 'https://8c31-2a01-cb0d-11b-4b00-545e-59cd-7fee-3ca3.ngrok-free.app';
 
 const App: FC = () => {
   const [page, setPage] = useState<string>('home'); // Dit aanpassen als jullie die als eerste pagina willen
@@ -15,6 +15,7 @@ const App: FC = () => {
   const [currentCourse, setCurrentCourse] = useState<string>('');
   const [studyPoints, setStudyPoints] = useState<string>('30');
   const [allCourses, setAllCourses] = useState<string[]>([]);
+  let [l, setL] = useState(19);
 
   const handleCourseSelect = (course: string) => {
     setCurrentCourse(course);
@@ -58,12 +59,13 @@ const App: FC = () => {
     Study_Points: 'The amount of study points this course is',
   };
 
-  const featuresList = [
+  const [featuresList, setFeatureList] = useState<string[]>([
     "Hours_Studied", "Attendance", "Parental_Involvement", "Sleep_Hours",
     "Extracurricular_Activities", "Previous_Scores", "Motivation_Level",
     "Tutoring_Sessions", "Family_Income", "Teacher_Quality", "Peer_Influence",
-    "Physical_Activity", "Distance_from_Home", "Gender", "Learning_Disabilities"
-  ];
+    "Physical_Activity", "Distance_from_Home", "Gender", "Learning_Disabilities", 
+    "School_Type", "Parental_Education_Level", "Internet_Access", "Access_to_Resources"
+    ]);
 
   const [prediction, setPrediction] = useState<number | null>(null);
   const [chartUrl, setChartUrl] = useState<Record<string, any>>({
@@ -72,10 +74,7 @@ const App: FC = () => {
   });
 
   const [plots, setPlots] = useState<Record<string, any>>({});
-
   const [explanation, setExplanation] = useState<Record<string, any>>();
-
-  
 
   const dropdownOptions = {
     lmh: [
@@ -104,6 +103,7 @@ const App: FC = () => {
   };
 
   const [currentFeature, setCurrentFeature] = useState(0);
+  const featureName = featuresList[currentFeature];
 
   const handleNextFeature = () => {
     setCurrentFeature((prev) => (prev + 1) % featuresList.length);
@@ -112,8 +112,6 @@ const App: FC = () => {
   const handlePreviousFeature = () => {
     setCurrentFeature((prev) => (prev - 1 + featuresList.length) % featuresList.length);
   };
-
-  const featureName = featuresList[currentFeature];
 
   const handleInputChange = (key: string, value: string | number) => {
     setFormData((prevData) => ({ ...prevData, [key]: value }));
@@ -166,6 +164,8 @@ const App: FC = () => {
       setLoadingMessage('Getting explanations...');
       const response_exp = await axios.get(`${API_URL}/get_explanation`);
       setExplanation(response_exp.data);
+      setFeatureList(response_exp.data.explanation.features) // TOKNOW: remove if not sorting by relevance
+      setL(featuresList.length)
 
       setPage('prediction');
     } catch (error) {
@@ -190,7 +190,7 @@ const App: FC = () => {
   const handleCleaning = async () => {
     const response = await axios.get(`${API_URL}/handle_cleaning`);
     setPage('home')
-  }
+  }  
 
   const renderCourseInputField = (label: string, placeholder: string, keyboardType: any = 'default') => (
       <View style={styles.inputContainer}>
@@ -204,7 +204,6 @@ const App: FC = () => {
         />
       </View>
   );
-
 
   const renderDropdown = (label: string, key: string, items: any[]) => (
       <View style={styles.inputContainer}>
@@ -547,13 +546,10 @@ const App: FC = () => {
             );
           })}
         </View>
-
-
-
-
           {/* Action Buttons */}
           <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={() => setPage('improvements')} style={styles.button}>
+            <TouchableOpacity onPress={() => {console.log(featuresList)
+              setPage('improvements')}} style={styles.button}>
               <Text style={styles.buttonText}>How to improve my result?</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setPage('DetailedGraph')} style={styles.button}>
@@ -595,29 +591,24 @@ const App: FC = () => {
 
   if (page === 'improvements') {
     return (
-        <View style={styles.container}>
-          <Text style={styles.ExpectedScore}>Predicted score: {prediction}%</Text>
-
-          {/* Back button */}
-          <View style={styles.BackButtonContainer}>
-            <TouchableOpacity onPress={() => setPage('prediction')}>
-              <Text style={styles.ButtonText}>Back</Text>
-            </TouchableOpacity>
+        <View style={styles.top_container_i}>
+          <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('prediction')}>
+            <Text style={styles.ButtonText}>Back</Text>
+          </TouchableOpacity>
+          <View style={styles.center}>
+            <Text style={styles.ExpectedScore}>Predicted score: {prediction}%</Text>
           </View>
-
+          
           {/* Scrollable feature analysis section */}
           <View style={styles.Iphone13145_i}>
             <View style={styles.Group471_i}>
               <View style={styles.Group23_i}>
                 <View style={styles.Group20_i}>
-                  <Text style={styles.FeatureTitle}>Feature Impact Analysis</Text>
+                  <Text style={styles.FeatureTitle}>Feature Impact Analysis of: <Text style={styles.FeatureName}>{featureName}</Text></Text>
 
                   {/* Check if the current feature exists in the plots */}
                   {plots[featureName] ? (
                       <>
-                        {/* Feature name */}
-                        <Text style={styles.FeatureName}>{featureName}</Text>
-
                         {/* Container for graph and text */}
                         <Text style={styles.ExplanationText}>{plots[featureName].explanation}</Text>
                         {plots[featureName].url && (
@@ -635,14 +626,16 @@ const App: FC = () => {
               </View>
             </View>
           </View>
+
+          
           {/* Navigation buttons to go to the next/previous feature */}
           <View style={styles.NavigationButtons}>
-            <TouchableOpacity onPress={handlePreviousFeature}>
-              <Text style={styles.NavButtonText}>Previous</Text>
+            <TouchableOpacity style={styles.ButtonBG} onPress={handlePreviousFeature}>
+              <Text style={styles.ButtonText}>Previous</Text>
             </TouchableOpacity>
-            <Text> {currentFeature+1}/15</Text>
-            <TouchableOpacity onPress={handleNextFeature}>
-              <Text style={styles.NavButtonText}>Next</Text>
+            <Text> {currentFeature+1}/{l}</Text>
+            <TouchableOpacity style={styles.ButtonBG} onPress={handleNextFeature}>
+              <Text style={styles.ButtonText}>Next</Text>
             </TouchableOpacity>
           </View>
         </View>
