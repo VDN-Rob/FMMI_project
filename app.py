@@ -139,15 +139,6 @@ def train_model(X_train, y_train):
     except Exception as e:
         raise Exception(f"Error during model training: {e}")
 
-def calculate_shap_values(model, X):
-    """Calculates SHAP values for feature importance."""
-    try:
-        explainer = shap.TreeExplainer(model)
-        shap_values = explainer.shap_values(X)
-        return shap_values, explainer
-    except Exception as e:
-        raise Exception(f"Error during SHAP value calculation: {e}")
-
 def plot_feature_effect(feature_name):
     try:
         step = 1
@@ -214,6 +205,8 @@ def plot_feature_effect(feature_name):
         return e
 
 def plot_waterfalls():
+    global shap_explanation
+
     try:
         # Ensure that global_shap_values is in the correct format
         if not isinstance(shap_explanation, shap.Explanation):
@@ -221,8 +214,8 @@ def plot_waterfalls():
         
         # Extract data for the Plotly waterfall chart
         feature_names_5 = shap_explanation.feature_names[:6]
-        shap_values_5 = shap_explanation.values[0][:6]
-        other_values_5 = np.sum(shap_explanation.values[0][6:])
+        shap_values_5 = shap_explanation.values[:6]
+        other_values_5 = np.sum(shap_explanation.values[6:])
         base_value_5 = shap_explanation.base_values[0]
 
         # Prepare data for the waterfall plot
@@ -272,7 +265,7 @@ def plot_waterfalls():
 
         # Extract data for the Plotly waterfall chart
         feature_names_19 = shap_explanation.feature_names
-        shap_values_19 = shap_explanation.values[0]
+        shap_values_19 = shap_explanation.values
         base_value_19 = shap_explanation.base_values[0]
 
         # Prepare data for the waterfall plot
@@ -424,12 +417,24 @@ def api_get_prediction():
         prediction = model.predict(preprocessed_data)[0]
 
         explainer = shap.TreeExplainer(model)
-        shap_values = explainer.shap_values(preprocessed_data)
+        # Extract the SHAP values and feature names
+        shap_values = explainer.shap_values(preprocessed_data)[0]
+        feature_names = input_df.columns
 
-        # Wrap the SHAP values into a shap.Explanation object
-        shap_explanation = shap.Explanation(shap_values, feature_names=input_df.columns, 
-                                            base_values=explainer.expected_value, 
-                                            data=preprocessed_data)
+        # Get the indices that would sort the SHAP values by absolute value (descending order)
+        sorted_indices = np.argsort(-np.abs(shap_values))
+
+        # Sort feature names and SHAP values using the sorted indices
+        sorted_feature_names = np.array(feature_names)[sorted_indices]
+        sorted_shap_values = shap_values[sorted_indices]
+
+        # Wrap the reordered values back into a SHAP Explanation object (optional)
+        shap_explanation = shap.Explanation(
+            values=sorted_shap_values,
+            base_values=explainer.expected_value,
+            data=preprocessed_data,
+            feature_names=sorted_feature_names
+        )
 
         return jsonify({"prediction": prediction}), 200
     except Exception as e:
@@ -445,8 +450,8 @@ def generate_plots():
     try:
         result = {}
 
-        # for feature in featuresList:
-        #     result[feature] = plot_feature_effect(feature)
+        for feature in featuresList:
+            result[feature] = plot_feature_effect(feature)
         
         result.update(plot_waterfalls())
 
@@ -485,6 +490,31 @@ def api_handle_cleaning():
         user_input = defaults
         return "succes", 200
     except Exception as e:
+        return jsonify({"error during cleaning": str(e)}), 400
+    
+@app.route('/get_explanation', methods=['GET'])
+def api_get_explanation():
+    global defaults, shap_explanation
+
+    try:
+        exp = deepcopy(shap_explanation)
+        
+        # Convert to list if it's a NumPy array, otherwise leave it as is
+        features = exp.feature_names if isinstance(exp.feature_names, list) else exp.feature_names.tolist()
+        values = exp.values if isinstance(exp.values, list) else exp.values.tolist()
+        base_value = exp.base_values if isinstance(exp.base_values, list) else exp.base_values.tolist()
+        print(values)
+        return jsonify({
+            "defaults": deepcopy(defaults), 
+            "explanation": {
+                'features': features, 
+                'values': values, 
+                'base_value': base_value
+            }
+        })
+    
+    except Exception as e:
+        print(str(e))
         return jsonify({"error during cleaning": str(e)}), 400
 
 

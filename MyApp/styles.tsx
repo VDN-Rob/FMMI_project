@@ -810,6 +810,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#333333',
         marginBottom: 4,
+        marginLeft: 10,
+        marginRight: 10,
     },
 
     // Link container

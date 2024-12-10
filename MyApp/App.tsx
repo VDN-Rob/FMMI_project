@@ -1,10 +1,9 @@
-import React, { useState, FC, useEffect } from 'react';
-import { View, Text, Button, TextInput, StyleSheet, ScrollView, ActivityIndicator, Alert, Image, TouchableOpacity, FlatList, ImageBackground } from 'react-native';
+import React, { useState, FC } from 'react';
+import { View, Text, TextInput, ScrollView, ActivityIndicator, Alert, Image, TouchableOpacity, FlatList, ImageBackground } from 'react-native';
 import axios from 'axios';
 import CustomSlider from './CustomSlider';
 import CustomDropDown from './CustomDropDown';
 import styles from './styles';
-import { WebView } from 'react-native-webview';
 
 const API_URL = 'http://192.168.1.46:5000';
 
@@ -20,7 +19,6 @@ const App: FC = () => {
   const handleCourseSelect = (course: string) => {
     setCurrentCourse(course);
   };
-
 
   const [formData, setFormData] = useState<Record<string, any>>({
     Hours_Studied: '',
@@ -41,6 +39,25 @@ const App: FC = () => {
     Study_Points: '',
   });
 
+  const mapping_prediction : { [key: string]: string } = {
+    Hours_Studied: 'The amount you study',
+    Attendance: 'Your attendance rate',
+    Parental_Involvement: 'Your parental involvement',
+    Sleep_Hours: 'The amount you sleep',
+    Extracurricular_Activities: 'You partaking in extracurricular activities',
+    Previous_Scores: 'Your past scoring',
+    Motivation_Level: 'Your motivation level',
+    Tutoring_Sessions: 'The amount of tutoring sessions you have',
+    Family_Income: 'Your family income',
+    Teacher_Quality: 'The quality of your teachers',
+    Peer_Influence: "Your friend's influence",
+    Physical_Activity: 'The amount of physical activity you do',
+    Distance_from_Home: 'Your home to school distance',
+    Gender: 'Your gender',
+    Learning_Disabilities: 'Your learning disabilities',
+    Study_Points: 'The amount of study points this course is',
+  };
+
   const featuresList = [
     "Hours_Studied", "Attendance", "Parental_Involvement", "Sleep_Hours",
     "Extracurricular_Activities", "Previous_Scores", "Motivation_Level",
@@ -55,6 +72,10 @@ const App: FC = () => {
   });
 
   const [plots, setPlots] = useState<Record<string, any>>({});
+
+  const [explanation, setExplanation] = useState<Record<string, any>>();
+
+  
 
   const dropdownOptions = {
     lmh: [
@@ -142,6 +163,10 @@ const App: FC = () => {
         }
       }
 
+      setLoadingMessage('Getting explanations...');
+      const response_exp = await axios.get(`${API_URL}/get_explanation`);
+      setExplanation(response_exp.data);
+
       setPage('prediction');
     } catch (error) {
       Alert.alert('Error', 'Something went wrong. Please try again.' + error);
@@ -150,16 +175,6 @@ const App: FC = () => {
       setIsLoading(false);
     }
   };
-
-  const testHtml = `
-  <html>
-    <head></head>
-    <body>
-      <h1>Test HTML</h1>
-      <p>This is a test plot placeholder.</p>
-    </body>
-  </html>
-`;
 
   const handleCourseSelection = async () => {
     const response = await axios.post(`${API_URL}/submit_course`, { course: currentCourse });
@@ -509,12 +524,32 @@ const App: FC = () => {
 
           {/* Factors Impact Section */}
           <View style={styles.factorsContainer}>
-            {['highest', 'second highest', 'third highest', 'fourth highest', 'fifth highest'].map((rank, index) => (
+          {explanation && ['highest', 'second highest', 'third highest', 'fourth highest', 'fifth highest'].map((rank, index) => {
+            // Safely access values and features with proper fallback
+            const value = explanation.explanation.values[index]
+            const feature = explanation.explanation.features[index]
+            const mappedFeature = mapping_prediction[feature as keyof typeof mapping_prediction] ?? feature;
+
+
+            // Initialize score and impact
+            let score = '0';
+            let impact = 'N/A';
+
+            if (typeof value === 'number') {
+              score = Math.abs(value).toFixed(2) // Absolute value for percentage
+              impact = value > 0 ? 'increases' : 'decreases'
+            }
+
+            return (
               <Text key={index} style={styles.factorText}>
-                • Factor with {rank} impact: (description + impact)
+                • {mappedFeature} has the {rank} impact: it {impact} the predicted score by {score} percent.
               </Text>
-            ))}
-          </View>
+            );
+          })}
+        </View>
+
+
+
 
           {/* Action Buttons */}
           <View style={styles.buttonContainer}>
