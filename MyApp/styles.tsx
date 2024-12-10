@@ -2,10 +2,273 @@ import { Dimensions, StyleSheet } from 'react-native';
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+    // General
+    background: {
+        flex: 1,
+        resizeMode: 'cover',
+    },
+    topContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start'
+    },
+    ButtonBG: {
+        width: 0.3 * width,
+        height: 0.05 * height,
+        backgroundColor: "rgba(44,17,252,0.08)",
+        alignItems: "center",
+        justifyContent: 'center',
+        margin: 10,
+        borderRadius: 20
+    },
+    ButtonText: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        color: 'rgba(0,0,0,1)',
+        fontSize: 20,
+        lineHeight: 20,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '400',
+        textAlign: 'center',
+        alignItems: 'center',
+    },
+    BoldText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        margin: 10
+    },
+    continueText: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        color: "rgba(0,0,0,1)",
+        fontSize: 20,
+        lineHeight: 20,
+        fontFamily: "Inter, sans-serif",
+        fontWeight: "400",
+        textAlign: "center",
+    },
+    SmallTitle: { 
+        fontSize: 24, 
+        fontWeight: 'bold', 
+        marginBottom: 20, 
+        textAlign: 'center', 
+        paddingTop: 20
+    },
+
+
+    // Page home
+    HomeTopContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingLeft: 0.1 * width, // 10% of screen width
+        paddingRight: 0.1 * width,
+        paddingTop: 0.20 * height, // 20% of screen height
+        paddingBottom: 0.3 * height,
+    },
+    HomeContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingLeft: 0.1 * width, // 10% of screen width
+        paddingRight: 0.1 * width,
+        paddingTop: 0.1 * height, // 20% of screen height
+        paddingBottom: 0.1 * height,
+        height: 0.70 * height,
+        backgroundColor: 'rgba(255,255,255,0.75)',
+        borderRadius: 50
+    },
+    HomeMainTitle: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        color: 'rgba(0,0,0,1)',
+        fontSize: 34,
+        lineHeight: 34,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '400',
+        textAlign: 'center',
+        marginBottom: 25,
+    },
+    HomeSubtitle: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        color: 'rgba(0,0,0,1)',
+        fontSize: 18,
+        lineHeight: 18,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '400',
+        textAlign: 'center',
+        marginBottom: 75,
+    },
+    HomeButtonContainer: {
+        width: '100%',
+        paddingLeft: 0.1 * width,
+        paddingRight: 0.1 * width,
+        paddingTop: 18,
+        paddingBottom: 18,
+        backgroundColor: 'rgba(44,17,252,0.2)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 20
+    },
+    HomePredictionText: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        color: 'rgba(0,0,0,1)',
+        fontSize: 28,
+        lineHeight: 28,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '400',
+        textAlign: 'center',
+    },
+    HomeLink: {
+        width: '100%',
+        paddingLeft: 15,
+        paddingRight: 15,
+        paddingTop: 14,
+        paddingBottom: 31,
+        marginBottom: 0, // Ruimte tussen de knoppen
+    },
+    HomeHowDoesItWorkText: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        color: 'rgba(0,0,0,1)',
+        fontSize: 20,
+        lineHeight: 20,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '400',
+        textAlign: 'center',
+        textDecorationLine: 'underline',
+    },
+
+    // Page tutorial
+    TutorialContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    Group998: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '90%',
+        paddingLeft: '10%',
+        // boxSizing: 'border-box',
+
+    },
+    WhatDoesItDoThisAppl: {
+        color: 'rgba(0,0,0,1)',
+        fontSize: 16,
+        lineHeight: 16,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '700',
+        textAlign: 'left',
+        paddingLeft: 0,
+        marginBottom: 10,
+        marginTop: 20,
+    },
+    BackButtonContainer: {
+        width: 100,
+        height: 41,
+        position: 'absolute', // Hiermee zet je het element uit de normale flow
+        top: 0.05 * height, // Plaatst de knop aan de bovenkant
+        left: 0,
+        backgroundColor: 'rgba(44,17,252,0.08)',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    Subtext: {
+        display: 'flex',
+        flexDirection: 'column',
+        color: 'rgba(0,0,0,1)',
+        fontSize: 16,
+        lineHeight: 16,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '400',
+        textAlign: 'left',
+        marginBottom: 5,
+    },
+    Subtext2: {
+        display: 'flex',
+        flexDirection: 'column',
+        color: 'rgba(0,0,0,1)',
+        fontSize: 16,
+        lineHeight: 16,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '400',
+        textAlign: 'left',
+    },
+    BulletSubtext: {
+        display: 'flex',
+        flexDirection: 'column',
+        color: 'rgba(0,0,0,1)',
+        fontSize: 16,
+        lineHeight: 16,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '400',
+        textAlign: 'left',
+        marginBottom: 5,
+        marginLeft: 0.1 * width
+    },
+
+
+    // Page Course selection
+    CSContainer: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        width: '100%',
+        height: '100%',
+        backgroundColor: "rgba(255,255,255,1)",
+        maxHeight: 0.65 * height
+    },
+    CSTableContainer: {
+        width: "90%",
+        height: "40%",
+        paddingLeft: 25,
+        paddingRight: 40,
+        paddingBottom: 50,
+        borderWidth: 2,
+        borderColor: "rgba(0,0,0,0)",
+    },
+    CSPlaceholderMessage: {
+        fontSize: 16,
+        color: 'gray',
+        textAlign: 'center',
+        marginTop: 20,
+    },
+    CSBottomContainer: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        width: '100%',
+    },
+    CSSelected: {
+        width: 0.9 * width,
+        height: 0.075 * height,
+        backgroundColor: "rgba(44,17,252,0.08)",
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        margin: 10,
+        borderRadius: 20,
+        borderColor: "rgba(0,0,0,1)",
+        borderWidth: 1
+    },
+
     // Page input
-    Input_top_container: {flex: 1, flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start'},
     Input_container: { flexGrow: 1, padding: 20, paddingBottom: 100 },
-    Input_title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center', paddingTop: 20 },
     sliderContainer: {
         marginVertical: 10,
         padding: 10,
@@ -22,26 +285,9 @@ const styles = StyleSheet.create({
         color: '#555',
         textAlign: 'center',
     },
-    Group61: {
-        width: 100,
-        height: 41,
-        backgroundColor: "rgba(44,17,252,0.08)",
-        alignItems: "center",
-        justifyContent: 'center',
-        margin: 10
-    },
-
-
-    emptyMessage: {
-        fontSize: 16,
-        color: 'gray',
-        textAlign: 'center',
-        marginTop: 20,
-    },
     container2: {
         flex: 1,
-        backgroundColor: '#rgba(255,255,255,1)', // Background color for the page
-        padding: 16, // Padding around the content
+        backgroundColor: '#rgba(255,255,255,1)',
     },
 
     // Header container
@@ -73,14 +319,12 @@ const styles = StyleSheet.create({
         flex: 1, // Takes up remaining space
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f9f9f9', // Light background for better contrast
-        borderRadius: 8, // Rounded corners for the container
         overflow: 'hidden', // Prevents content spilling out of rounded edges
     },
 
     // Chart image
     chartImage: {
-        width: '100%',
+        width: width,
         height: '100%',
     },
 
@@ -109,206 +353,6 @@ const styles = StyleSheet.create({
         fontWeight: '400',    // Keeps the text weight balanced and not too bold
     },
     
-    Frame1: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        width: '90%',
-        height: '80%',
-        paddingLeft: 0.2 * width, // 10% of screen width
-        paddingRight: 0.1 * width,
-        paddingTop: 0.2 * height, // 20% of screen height
-        paddingBottom: 0.3 * height,
-        backgroundColor: 'rgba(255,255,255,1)',
-    },
-    Group018: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        width: '100%',
-        height: '100%',
-    },
-    StudentPerformancePr: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        color: 'rgba(0,0,0,1)',
-        fontSize: 34,
-        lineHeight: 34,
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: '400',
-        textAlign: 'center',
-        marginBottom: 20, // Voegt ruimte onder de tekst toe
-    },
-    ToPredictAndImproveY: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        color: 'rgba(0,0,0,1)',
-        fontSize: 18,
-        lineHeight: 18,
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: '400',
-        textAlign: 'center',
-        marginBottom: 100, // Voegt ruimte onder de tekst toe
-    },
-    Group3: {
-        width: '100%',
-        backgroundColor: 'rgba(44,17,252,0.08)',
-        marginBottom: 5, // Voegt ruimte toe tussen de secties
-    },
-    Group1: {
-        width: '100%',
-        paddingLeft: 26,
-        paddingRight: 26,
-        paddingTop: 17,
-        paddingBottom: 18,
-        backgroundColor: 'rgba(44,17,252,0.08)',
-        // marginBottom: 20,  // Ruimte tussen de knoppen
-        alignItems: 'center', // Centrerende van de inhoud horizontaal
-        justifyContent: 'center',
-    },
-    MakeNewPrediction: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        color: 'rgba(0,0,0,1)',
-        fontSize: 28,
-        lineHeight: 28,
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: '400',
-        textAlign: 'center',
-    },
-    Group2: {
-        width: '100%',
-        paddingLeft: 15,
-        paddingRight: 15,
-        paddingTop: 14,
-        paddingBottom: 31,
-        backgroundColor: 'rgba(255,255,255,1)',
-        marginBottom: 0, // Ruimte tussen de knoppen
-    },
-    HowDoesItWork: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        color: 'rgba(0,0,0,1)',
-        fontSize: 20,
-        lineHeight: 20,
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: '400',
-        textAlign: 'center',
-        textDecorationLine: 'underline',
-    },
-    Frame2: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        width: '100%',
-        height: 844,
-        // paddingRight: 28,
-        // paddingBottom: 670,
-        backgroundColor: 'rgba(255,255,255,1)',
-    },
-    Group997: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        textAlign: "center",
-        paddingTop: 125,
-        paddingBottom: 50,
-        width: '100%'
-        // paddingLeft: 20,
-
-    },
-    HowDoesOurApplicatio: {
-        display: 'flex',
-        flexDirection: 'column',
-        // justifyContent: 'center',
-        color: 'rgba(0,0,0,1)',
-        fontSize: 32,
-        lineHeight: 32,
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: '400',
-        textAlign: 'center',
-        // paddingTop: 100,
-        // paddingBottom: 100,
-        width: '100%'
-    },
-    Group998: {
-        display: 'flex',
-        flexDirection: 'column',
-        width: '90%',
-        paddingLeft: '10%',
-        // boxSizing: 'border-box',
-
-    },
-    WhatDoesItDoThisAppl: {
-        color: 'rgba(0,0,0,1)',
-        fontSize: 16,
-        lineHeight: 16,
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: '700',
-        textAlign: 'left',
-        paddingLeft: 0,
-        marginBottom: 10,
-        marginTop: 20,
-    },
-    BackButtonContainer: {
-        width: 100,
-        height: 41,
-        position: 'absolute', // Hiermee zet je het element uit de normale flow
-        top: 0.05 * height, // Plaatst de knop aan de bovenkant
-        left: 0,
-        backgroundColor: 'rgba(44,17,252,0.08)',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    Back: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        color: 'rgba(0,0,0,1)',
-        fontSize: 20,
-        lineHeight: 20,
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: '400',
-        textAlign: 'center',
-        alignItems: 'center',
-    },
-    Subtext: {
-        display: 'flex',
-        flexDirection: 'column',
-        color: 'rgba(0,0,0,1)',
-        fontSize: 16,
-        lineHeight: 16,
-        fontFamily: 'Inter, sans-serif',
-        fontWeight: '400',
-        textAlign: 'left',
-        marginBottom: 5,
-        paddingLeft: 0,
-    },
-    Iphone13141: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        alignItems: "flex-start",
-        width: '100%',
-        height: '100%',
-        // paddingRight: 26,
-        // paddingBottom: 27,
-        backgroundColor: "rgba(255,255,255,1)",
-    },
-    Group953: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-        width: '100%',
-    },
     ForWhichCourseDoYouW: {
         display: "flex",
         flexDirection: "column",
@@ -357,16 +401,6 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginBottom: 25,
     },
-    Group436: {
-        width: "90%",
-        height: "50%",
-        paddingLeft: 25,
-        paddingRight: 40,
-        paddingTop: 19,
-        paddingBottom: 50,
-        borderWidth: 2,
-        borderColor: "rgba(0,0,0,0)",
-    },
     HierMoetDeOverviewVa: {
         display: "flex",
         flexDirection: "column",
@@ -379,32 +413,6 @@ const styles = StyleSheet.create({
         textAlign: "center",
         paddingLeft: 25,
         // paddingRight:25,
-    },Group6: {
-        width: 115,
-        height: 41,
-        bottom: 0.1 * height,
-        left: 0.7 * width,
-        backgroundColor: "rgba(44,17,252,0.08)",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    Group615: {
-        width: 0.5 * width,
-        bottom: 0.05 * height,
-        left: 0.1 * width,
-        alignItems: "baseline",
-        justifyContent: "center",
-    },
-    Continue: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        color: "rgba(0,0,0,1)",
-        fontSize: 20,
-        lineHeight: 20,
-        fontFamily: "Inter, sans-serif",
-        fontWeight: "400",
-        textAlign: "center",
     },
     Iphone13143: {
         display: "flex",
@@ -433,8 +441,8 @@ const styles = StyleSheet.create({
         fontFamily: "Inter, sans-serif",
         fontWeight: "400",
         textAlign: "center",
-        marginTop: 110,
         alignItems: "center",
+        top: 0.075 * height
     },
     Group356: {
         width: "100%",
@@ -733,25 +741,25 @@ const styles = StyleSheet.create({
         textAlign: "center",
         // marginBottom: 150,
     },
-    Group570: {
+    Explanation: {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        width: 0.8 * width,
-        textAlign: "left"
+        justifyContent: 'space-evenly',
+        height: 0.45 * height
     },
     subsubtitle: {
         color: "rgba(0,0,0,1)",
         fontSize: 16,
         lineHeight: 16,
-        fontFamily: "Mplus 1p Bold, sans-serif",
+        fontFamily: "Inter, sans-serif",
         fontWeight: "700",
         // marginTop: 200,
     },
     container_p: {
         flex: 1,
         backgroundColor: '#rgba(255,255,255,1)',
-        padding: 16,
+        padding: 10,
         justifyContent: 'space-between',
     },
     // Header
@@ -760,9 +768,10 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     title_p: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#333333',
+        fontSize: 24, 
+        fontWeight: 'bold', 
+        marginBottom: 20, 
+        textAlign: 'center', 
     },
 
     // Chart container
@@ -770,14 +779,17 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 5,
-        borderRadius: 8,
-        padding: 5,
-        overflow: 'hidden',
+        overflow: 'hidden'
+    },
+    chartContainer_e: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        overflow: 'hidden'
     },
     chartImage_p: {
-        width: 0.90 * width,
-        height: "100%"
+        width: 0.95 * width,
+        height: 'auto'
     },
     loadingText_p: {
         fontSize: 16,
@@ -798,6 +810,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#333333',
         marginBottom: 4,
+        marginLeft: 10,
+        marginRight: 10,
     },
 
     // Link container
@@ -837,11 +851,6 @@ const styles = StyleSheet.create({
     backButtonText: {
         fontSize: 16,
         color: '#6200ee',
-    },
-    overviewText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 10,
     },
     coursesListContainer: {
         marginTop: 10,
@@ -887,16 +896,16 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginTop: 10,
     },
-    ButtonText: { color: '#fff', fontSize: 16, textAlign: 'center' },
-    FeatureEffectContainer: {
-        width: width * 0.85,
-        padding: 10,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 10,
-        alignItems: 'center',
-        backgroundColor: '#f9f9f9',
-    },
+    // ButtonText: { color: '#fff', fontSize: 16, textAlign: 'center' },
+    // FeatureEffectContainer: {
+    //     width: width * 0.85,
+    //     padding: 10,
+    //     borderWidth: 1,
+    //     borderColor: '#ccc',
+    //     borderRadius: 10,
+    //     alignItems: 'center',
+    //     backgroundColor: '#f9f9f9',
+    // },
     NavigationButtons: {
         flexDirection: 'row',
         justifyContent: 'space-between',
