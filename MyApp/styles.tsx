@@ -196,7 +196,28 @@ const styles = StyleSheet.create({
         fontWeight: '400',
         textAlign: 'left',
         marginBottom: 5,
-        paddingLeft: 0,
+    },
+    Subtext2: {
+        display: 'flex',
+        flexDirection: 'column',
+        color: 'rgba(0,0,0,1)',
+        fontSize: 16,
+        lineHeight: 16,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '400',
+        textAlign: 'left',
+    },
+    BulletSubtext: {
+        display: 'flex',
+        flexDirection: 'column',
+        color: 'rgba(0,0,0,1)',
+        fontSize: 16,
+        lineHeight: 16,
+        fontFamily: 'Inter, sans-serif',
+        fontWeight: '400',
+        textAlign: 'left',
+        marginBottom: 5,
+        marginLeft: 0.1 * width
     },
 
 
@@ -299,14 +320,12 @@ const styles = StyleSheet.create({
         flex: 1, // Takes up remaining space
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f9f9f9', // Light background for better contrast
-        borderRadius: 8, // Rounded corners for the container
         overflow: 'hidden', // Prevents content spilling out of rounded edges
     },
 
     // Chart image
     chartImage: {
-        width: '100%',
+        width: width,
         height: '100%',
     },
 
@@ -723,25 +742,25 @@ const styles = StyleSheet.create({
         textAlign: "center",
         // marginBottom: 150,
     },
-    Group570: {
+    Explanation: {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        width: 0.8 * width,
-        textAlign: "left"
+        justifyContent: 'space-evenly',
+        height: 0.45 * height
     },
     subsubtitle: {
         color: "rgba(0,0,0,1)",
         fontSize: 16,
         lineHeight: 16,
-        fontFamily: "Mplus 1p Bold, sans-serif",
+        fontFamily: "Inter, sans-serif",
         fontWeight: "700",
         // marginTop: 200,
     },
     container_p: {
         flex: 1,
         backgroundColor: '#rgba(255,255,255,1)',
-        padding: 16,
+        padding: 10,
         justifyContent: 'space-between',
     },
     // Header
@@ -761,14 +780,17 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 5,
-        borderRadius: 8,
-        overflow: 'hidden',
-        height: 0.6 * height
+        overflow: 'hidden'
+    },
+    chartContainer_e: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        overflow: 'hidden'
     },
     chartImage_p: {
         width: 0.95 * width,
-        height: "100%"
+        height: 'auto'
     },
     loadingText_p: {
         fontSize: 16,

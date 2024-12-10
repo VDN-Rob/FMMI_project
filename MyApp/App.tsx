@@ -1,9 +1,10 @@
-import React, { useState, FC } from 'react';
+import React, { useState, FC, useEffect } from 'react';
 import { View, Text, Button, TextInput, StyleSheet, ScrollView, ActivityIndicator, Alert, Image, TouchableOpacity, FlatList, ImageBackground } from 'react-native';
 import axios from 'axios';
 import CustomSlider from './CustomSlider';
 import CustomDropDown from './CustomDropDown';
 import styles from './styles';
+import { WebView } from 'react-native-webview';
 
 const API_URL = 'http://192.168.1.46:5000';
 
@@ -54,7 +55,6 @@ const App: FC = () => {
   });
 
   const [plots, setPlots] = useState<Record<string, any>>({});
-
 
   const dropdownOptions = {
     lmh: [
@@ -115,28 +115,21 @@ const App: FC = () => {
     try {
       setIsLoading(true);
       setLoadingMessage('Submitting data...');
-      console.log("usk")
-      console.log(formData)
       await axios.post(`${API_URL}/submit_input_prediction`, formData);
 
-      console.log("succeeded submitting")
       setLoadingMessage('Loading dataset...');
       await axios.get(`${API_URL}/load-dataset`);
-      console.log("succes Loading dataset")
 
       setLoadingMessage('Training model...');
       await axios.post(`${API_URL}/train-model`, {});
-      console.log("succes training")
 
       setLoadingMessage('Getting prediction...');
       const response = await axios.get<{ prediction: number}>(`${API_URL}/get_prediction`);
       setPrediction(response.data.prediction);
-      console.log("success prediction")
 
       // Request plots
       const responseURL = await axios.get(`${API_URL}/generate-plots`);
 
-      console.log("Loading dataset")
       handleUrlChange("five_factor","/" + responseURL.data.chart_url_5);
       handleUrlChange("nineteen_factor","/" + responseURL.data.chart_url_19);
 
@@ -158,12 +151,19 @@ const App: FC = () => {
     }
   };
 
+  const testHtml = `
+  <html>
+    <head></head>
+    <body>
+      <h1>Test HTML</h1>
+      <p>This is a test plot placeholder.</p>
+    </body>
+  </html>
+`;
+
   const handleCourseSelection = async () => {
     const response = await axios.post(`${API_URL}/submit_course`, { course: currentCourse });
     setFormData(response.data)
-    console.log(currentCourse)
-    console.log(allCourses)
-    console.log(allCourses.includes(currentCourse))
     if (allCourses.includes(currentCourse)) {
       setPage('input')
     } else {
@@ -470,65 +470,66 @@ const App: FC = () => {
 
     );
   }
-
+  
   if (page === 'prediction') {
+    // Render content
     return (
-        <View style={styles.topContainer}>
-          <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('input')}>
-            <Text style={styles.ButtonText}>Back</Text>
-          </TouchableOpacity>
+      <View style={styles.topContainer}>
+        <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('input')}>
+          <Text style={styles.ButtonText}>Back</Text>
+        </TouchableOpacity>
+        
+        <View style={styles.container_p}>
+          <View style={styles.header_p}>
+            <Text style={styles.title_p}>Expected score: {prediction}%</Text>
+          </View>
+
+          {/* Chart Section */}
+          <View style={styles.chartContainer}>
+            {chartUrl ? (
+                <Image
+                    source={{ uri: `${API_URL}${chartUrl.five_factor}?${new Date().getTime()}` }}
+                    style={styles.chartImage}
+                    resizeMode="contain" // Ensures the image scales proportionally
+                />
+            ) : (
+                <Text style={styles.loadingText2}>Loading chart...</Text> // Fallback message
+            )}
+          </View>
           
-          <View style={styles.container_p}>
-            <View style={styles.header_p}>
-              <Text style={styles.title_p}>Expected score: {prediction}%</Text>
-            </View>
+          <Text style={styles.description}>
+            This graph shows the 5 factors with the greatest impact on your predicted score.
+          </Text>
 
-            {/* Chart Section */}
-            <View style={styles.chartContainer_p}>
-              {chartUrl ? (
-                  <Image
-                      source={{ uri: `${API_URL}${chartUrl.five_factor}?${new Date().getTime()}` }}
-                      style={styles.chartImage_p}
-                      resizeMode="contain"
-                  />
-              ) : (
-                  <Text style={styles.loadingText_p}>Loading chart...</Text>
-              )}
-            </View>
-            <Text style={styles.description}>
-                This graph shows the 5 factors with the greatest impact on your predicted score.
+          <TouchableOpacity style={styles.linkContainer} onPress={() => setPage('explanationgraph')}>
+            <Text style={styles.linkText}>
+              Learn more about how this graph works
+            </Text>
+          </TouchableOpacity>
+
+          {/* Factors Impact Section */}
+          <View style={styles.factorsContainer}>
+            {['highest', 'second highest', 'third highest', 'fourth highest', 'fifth highest'].map((rank, index) => (
+              <Text key={index} style={styles.factorText}>
+                • Factor with {rank} impact: (description + impact)
               </Text>
-            <TouchableOpacity style={styles.linkContainer} onPress={() => setPage('explanationgraph')}>
-              <Text style={styles.linkText}>
-                Learn more about how this graph works
-              </Text>
+            ))}
+          </View>
+
+          {/* Action Buttons */}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={() => setPage('improvements')} style={styles.button}>
+              <Text style={styles.buttonText}>How to improve my result?</Text>
             </TouchableOpacity>
-
-            {/* Factors Impact Section */}
-            <View style={styles.factorsContainer}>
-              {['highest', 'second highest', 'third highest', 'fourth highest', 'fifth highest'].map(
-                  (rank, index) => (
-                      <Text key={index} style={styles.factorText}>
-                        • Factor with {rank} impact: (description + impact)
-                      </Text>
-                  )
-              )}
-            </View>
-
-            {/* Action Buttons */}
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity onPress={() => setPage('improvements')} style={styles.button}>
-                <Text style={styles.buttonText}>How to improve my result?</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setPage('DetailedGraph')} style={styles.button}>
-                <Text style={styles.buttonText}>See full graph with all factors</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleCleaning} style={styles.button}>
-                <Text style={styles.buttonText}>Go back to main screen</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity onPress={() => setPage('DetailedGraph')} style={styles.button}>
+              <Text style={styles.buttonText}>See full graph with all factors</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleCleaning} style={styles.button}>
+              <Text style={styles.buttonText}>Go back to main screen</Text>
+            </TouchableOpacity>
           </View>
         </View>
+      </View>
     );
   }
 
@@ -619,20 +620,23 @@ const App: FC = () => {
   if (page === 'explanationgraph') {
     return (
         <View style={styles.container_p}>
-          <View style={styles.chartContainer_p}>
+          <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('prediction')}>
+            <Text style={styles.ButtonText}>Back</Text>
+          </TouchableOpacity>
+          <View style={styles.chartContainer_e}>
             {chartUrl ? (
-                <Image
-                    source={{ uri: `${API_URL}${chartUrl.five_factor}?${new Date().getTime()}` }}
-                    style={styles.chartImage_p}
-                    resizeMode="contain"
-                />
-            ) : (
-                <Text style={styles.loadingText_p}>Loading chart...</Text>
-            )}
+                  <Image
+                      source={{ uri: `${API_URL}${chartUrl.five_factor}?${new Date().getTime()}` }}
+                      style={styles.chartImage}
+                      resizeMode="contain" // Ensures the image scales proportionally
+                  />
+              ) : (
+                  <Text style={styles.loadingText2}>Loading chart...</Text> // Fallback message
+              )}
           </View>
-          <View style={styles.Group570}>
+          <View style={styles.Explanation}>
             <Text style={styles.subsubtitle}>
-              Starting Point:
+              Starting Point (blue bar):
             </Text>
             <Text style={styles.Subtext}>
               The graph begins with the average score, representing
@@ -641,40 +645,32 @@ const App: FC = () => {
             <Text style={styles.subsubtitle}>
               Predicted Score Calculation:
             </Text>
-            <Text style={styles.Subtext}>
+            <Text style={styles.Subtext2}>
               Your predicted score is calculated by adding the impact of your
-              personal characteristics and study habits to the average score.
+              personal characteristics and study habits to the average score. This happens by making use of positive and negative contributions.
             </Text>
-            <Text style={styles.subsubtitle}>
-              Positive and Negative Contributions:
-            </Text>
-            <Text style={styles.Subtext}>
-              • Green arrows indicate positive
+            <Text style={styles.BulletSubtext}>
+              • Green bars indicate a positive
               contributions to your score.
             </Text>
-            <Text style={styles.Subtext}>
-              • Red arrows indicate negative
+            <Text style={styles.BulletSubtext}>
+              • Red bars indicate a negative
               contributions to your score.
             </Text>
             <Text style={styles.subsubtitle}>
-              Arrow Size:
+              Bar Size:
             </Text>
             <Text style={styles.Subtext}>
-              The size of the arrows
+              The size of the bars
               reflects the magnitude of each factor's impact on your score.
             </Text>
             <Text style={styles.subsubtitle}>
-              Final Score:
+              Final Score (gold bar):
             </Text>
             <Text style={styles.Subtext}>
               The combined adjustments (positive and negative) lead to your
               final predicted score.
             </Text>
-          </View>
-          <View style={styles.BackButtonContainer}>
-            <TouchableOpacity onPress={() => setPage('prediction')}>
-              <Text style={styles.ButtonText}>Back</Text>
-            </TouchableOpacity>
           </View>
         </View>
     )

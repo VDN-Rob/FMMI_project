@@ -1,6 +1,8 @@
 import base64
 from copy import deepcopy
 import io
+import tempfile
+import traceback
 from flask import Flask, request, jsonify, send_file, send_from_directory
 import matplotlib
 import pandas as pd
@@ -13,6 +15,9 @@ from flask_cors import CORS
 import matplotlib.pyplot as plt
 matplotlib.use('Agg')
 import os
+import plotly.graph_objects as go
+from plotly.offline import plot
+import kaleido
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -210,73 +215,135 @@ def plot_feature_effect(feature_name):
 
 def plot_waterfalls():
     try:
-        default_pos_color = "#0085ca"
-        default_neg_color = "#ca0020"
-        positive_color = "#0085ca"
-        negative_color = "#ca0020"
         # Ensure that global_shap_values is in the correct format
         if not isinstance(shap_explanation, shap.Explanation):
             raise ValueError("SHAP values must be a shap.Explanation object.")
+        
+        # Extract data for the Plotly waterfall chart
+        feature_names_5 = shap_explanation.feature_names[:6]
+        shap_values_5 = shap_explanation.values[0][:6]
+        other_values_5 = np.sum(shap_explanation.values[0][6:])
+        base_value_5 = shap_explanation.base_values[0]
 
-        # Generate the waterfall chart using shap.plot.waterfall
-        plt.figure()
-        
-        # Plotting using shap's built-in waterfall plot
-        shap.plots.waterfall(shap_explanation[0], show = False, max_display=6)
-        for fc in plt.gcf().get_children():
-            for fcc in fc.get_children():
-                if (isinstance(fcc, matplotlib.patches.FancyArrow)):
-                    if (matplotlib.colors.to_hex(fcc.get_facecolor()) == default_pos_color):
-                        fcc.set_facecolor(positive_color)
-                    elif (matplotlib.colors.to_hex(fcc.get_facecolor()) == default_neg_color):
-                        fcc.set_color(negative_color)
-                elif (isinstance(fcc, plt.Text)):
-                    if (matplotlib.colors.to_hex(fcc.get_color()) == default_pos_color):
-                        fcc.set_color(positive_color)
-                    elif (matplotlib.colors.to_hex(fcc.get_color()) == default_neg_color):
-                        fcc.set_color(negative_color)
-        plt.show()
-        
-        # Save the figure to a file
+        # Prepare data for the waterfall plot
+        values_5 = [base_value_5]  # Start with the base value
+        cumulative_value = base_value_5
+        y_values = [0]  # Starting from base_value for incremental additions
+
+        for shap_val in shap_values_5:
+            y_values.append(shap_val)
+            cumulative_value += shap_val
+
+        y_values.append(other_values_5)
+        cumulative_value += other_values_5
+
+        # X-axis labels
+        x_5 = ["Base Value"] + list(feature_names_5) + ["Other factors"] + ["Predicted score"]
+
+        # Create a Plotly waterfall plot
+        fig_5 = go.Figure()
+
+        fig_5.add_trace(go.Waterfall(
+            measure=['absolute'] + ['relative'] * len(shap_values_5) + ['relative'] + ['absolute'],
+            x=x_5,
+            y=[base_value_5] + y_values[1:] + [cumulative_value],  # Cumulative SHAP contributions
+            text=[f"{v:.4f}" for v in [base_value_5] + y_values[1:] + [cumulative_value]],
+            textposition="outside",
+            connector={"mode":"between", "line":{"width":2, "color":"rgb(0, 0, 0)", "dash":"solid"}}
+        ))
+
+        # Add title and axis labels
+        fig_5.update_layout(
+            xaxis_title="Features",
+            yaxis_title="Score",
+            showlegend=False,
+            yaxis=dict(range=[min(values_5) - 10, max(values_5) + 10])
+        )
+
+        # Save the figure as a PNG file
         output_dir = 'static/charts'
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-        
+
         chart_path_5 = os.path.join(output_dir, "waterfall_chart_5.png")
-        
-        # Save the plot to the file
-        plt.savefig(chart_path_5)
-        plt.close()
+        fig_5.write_image(chart_path_5)
 
-         # Generate the waterfall chart using shap.plot.waterfall
-        plt.figure()
+        # Extract data for the Plotly waterfall chart
+        feature_names_19 = shap_explanation.feature_names
+        shap_values_19 = shap_explanation.values[0]
+        base_value_19 = shap_explanation.base_values[0]
+
+        # Prepare data for the waterfall plot
+        values_19 = [base_value_19]  # Start with the base value
+        cumulative_value = base_value_19
+        y_values = [0]  # Starting from base_value for incremental additions
+
+        for shap_val in shap_values_19:
+            y_values.append(shap_val)
+            cumulative_value += shap_val
+
+        # X-axis labels
+        x_19 = [base_value_19] + y_values[1:] + [cumulative_value]
+        y_19 = ["Base Value"] + list(feature_names_19) + ["Predicted score"]
+
+        # Create a Plotly vertical waterfall plot
+        fig_19 = go.Figure()
+
+        fig_19.add_trace(go.Waterfall(
+            measure=['absolute'] + ['relative'] * len(shap_values_19) + ['absolute'],
+            y=y_19,
+            x=x_19,  # Cumulative SHAP contributions
+            text=[f"{v:.4f}" for v in x_19],
+            textposition="outside",
+            orientation="h",  # Set to vertical
+            connector={"mode": "between", "line": {"width": 2, "color": "rgb(0, 0, 0)", "dash": "solid"}}
+        ))
+
+        # Add title and axis labels
+        fig_19.update_layout(
+            yaxis_title="Features",  # Switch labels for vertical orientation
+            xaxis_title="Score",
+            showlegend=False,
+            xaxis=dict(range=[min(values_19) - 10, max(values_19) + 10])  # Adjust x-axis (now vertical range)
+        )
+
+        # TODO: reverse graph to top-bottom
+        # # X-axis labels
+        # x_19 = [base_value_19] + y_values[1:] + [cumulative_value]
+        # x_19.reverse()
+        # y_19 = ["Base Value"] + list(feature_names_19) + ["Predicted score"]
+        # y_19.reverse()
         
-        # Plotting using shap's built-in waterfall plot
-        shap.plots.waterfall(shap_explanation[0], show = False, max_display=20)
-        for fc in plt.gcf().get_children():
-            for fcc in fc.get_children():
-                if (isinstance(fcc, matplotlib.patches.FancyArrow)):
-                    if (matplotlib.colors.to_hex(fcc.get_facecolor()) == default_pos_color):
-                        fcc.set_facecolor(positive_color)
-                    elif (matplotlib.colors.to_hex(fcc.get_facecolor()) == default_neg_color):
-                        fcc.set_color(negative_color)
-                elif (isinstance(fcc, plt.Text)):
-                    if (matplotlib.colors.to_hex(fcc.get_color()) == default_pos_color):
-                        fcc.set_color(positive_color)
-                    elif (matplotlib.colors.to_hex(fcc.get_color()) == default_neg_color):
-                        fcc.set_color(negative_color)
-        plt.show()
-        
-        # Save the figure to a file
+        # # Create a Plotly vertical waterfall plot
+        # fig_19 = go.Figure()
+
+        # fig_19.add_trace(go.Waterfall(
+        #     measure=['absolute'] + ['relative'] * len(shap_values_19) + ['absolute'],
+        #     y=y_19,  # Reversed labels
+        #     x=x_19,  # Reversed SHAP contributions
+        #     text=[f"{v:.4f}" for v in x_19],
+        #     textposition="outside",
+        #     orientation="h",  # Set to vertical
+        #     connector={"mode": "between", "line": {"width": 2, "color": "rgb(0, 0, 0)", "dash": "solid"}}
+        # ))
+
+        # # Add title and axis labels
+        # fig_19.update_layout(
+        #     yaxis_title="Features",  # Switch labels for vertical orientation
+        #     xaxis_title="Score",
+        #     yaxis=dict(autorange="reversed"),  # Reverse the y-axis
+        #     showlegend=False,
+        #     xaxis=dict(range=[min(values_19) - 10, max(values_19) + 10])  # Adjust x-axis (now vertical range)
+        # )
+
+        # Save the figure as a PNG file
         output_dir = 'static/charts'
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-        
+
         chart_path_19 = os.path.join(output_dir, "waterfall_chart_19.png")
-        
-        # Save the plot to the file
-        plt.savefig(chart_path_19)
-        plt.close()
+        fig_19.write_image(chart_path_19)
+
         
         return {"chart_url_5": chart_path_5, "chart_url_19": chart_path_19}
     except Exception as e:
@@ -375,8 +442,8 @@ def generate_plots():
     try:
         result = {}
 
-        for feature in featuresList:
-            result[feature] = plot_feature_effect(feature)
+        # for feature in featuresList:
+        #     result[feature] = plot_feature_effect(feature)
         
         result.update(plot_waterfalls())
 
@@ -385,8 +452,7 @@ def generate_plots():
     except Exception as e:
         print("Error generating plots:", str(e))
         return jsonify({"error": f"Error generating plots: {str(e)}"}), 500
-
-
+    
 @app.route('/static/charts/<filename>')
 def serve_chart(filename):
     # Flask will serve the chart image from the static/charts directory
@@ -401,13 +467,11 @@ def api_submit_course():
     global defaults, course_selection, current_course
 
     course = request.json.get('course')
-    print(course)
+    print(shap.__version__)
     current_course = course
     if course in course_selection.keys():
-        print(True)
         return course_selection[course]
     else:
-        print(False)
         return defaults
     
 @app.route('/handle_cleaning', methods=['GET'])
