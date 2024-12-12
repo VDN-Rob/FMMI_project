@@ -61,8 +61,10 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
             onStartShouldSetPanResponder: () => true,
             onPanResponderMove: (_, gestureState) => {
                 // Constrain the thumb position within bounds
-                let newValue = currentPanValue.current + gestureState.dx / 2; // Reduce sensitivity
-                newValue = Math.max(0, Math.min(sliderWidth, newValue)); // Constrain thumb position
+                //let newValue = currentPanValue.current + gestureState.dx * 0.05; // Reduce sensitivity
+                let newValue = currentPanValue.current + gestureState.dx * (sliderWidth / Dimensions.get('window').width) * 0.07;
+                //newValue = Math.max(0, Math.min(sliderWidth, newValue)); // Constrain thumb position
+                newValue = Math.min(sliderWidth, Math.max(0, newValue));
 
                 pan.setValue(newValue); // Update animated value
                 if (onValueChange) {
@@ -78,6 +80,8 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
                 const steppedValue = Math.round(sliderValue / step) * step;
                 Animated.spring(pan, {
                     toValue: ((steppedValue - minimumValue) / (maximumValue - minimumValue)) * sliderWidth,
+                    stiffness: 400, // Adjust stiffness
+                    damping: 50,    // Reduce bounciness
                     useNativeDriver: false,
                 }).start();
             },
