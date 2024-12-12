@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: 'center',
         margin: 10,
-        borderRadius: 20
+        borderRadius: 20,
+        marginTop: 45
     },
     ButtonText: {
         display: 'flex',
@@ -51,11 +52,11 @@ const styles = StyleSheet.create({
         fontWeight: "400",
         textAlign: "center",
     },
-    SmallTitle: { 
-        fontSize: 24, 
-        fontWeight: 'bold', 
-        marginBottom: 20, 
-        textAlign: 'center', 
+    SmallTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        textAlign: 'center',
         paddingTop: 20
     },
 
@@ -295,8 +296,8 @@ const styles = StyleSheet.create({
         overflow: 'hidden', // Prevents content spilling out of rounded edges
     },
     chartImage: {
-        width: width,
-        height: '100%',
+        width: 400,
+        height: 400,
     },
     loadingText2: {
         fontSize: 16,
@@ -377,10 +378,10 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     title_p: {
-        fontSize: 24, 
-        fontWeight: 'bold', 
-        marginBottom: 20, 
-        textAlign: 'center', 
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        textAlign: 'center',
     },
 
     // Chart container
