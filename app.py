@@ -33,15 +33,12 @@ defaults = {
             "Sleep_Hours": 7,
             "Previous_Scores": 75,
             "Motivation_Level": "Medium",
-            "Internet_Access": "Yes",
             "Tutoring_Sessions": 2,
             "Family_Income": "Low",
             "Teacher_Quality": "Medium",
-            "School_Type": "Private",
             "Peer_Influence": "Positive",
             "Physical_Activity": 3,
             "Learning_Disabilities": "No",
-            "Parental_Education_Level": "High School",
             "Distance_from_Home": "Near",
             "Gender": "Male",
             "Study_Points": 30
@@ -51,8 +48,7 @@ featuresList = [
     "Hours_Studied", "Attendance", "Parental_Involvement", "Sleep_Hours",
     "Extracurricular_Activities", "Previous_Scores", "Motivation_Level",
     "Tutoring_Sessions", "Family_Income", "Teacher_Quality", "Peer_Influence",
-    "Physical_Activity", "Distance_from_Home", "Gender", "Learning_Disabilities", 
-    "School_Type", "Parental_Education_Level", "Internet_Access", "Access_to_Resources"
+    "Physical_Activity", "Distance_from_Home", "Gender", "Learning_Disabilities", "Access_to_Resources"
     ]
 
 # Store user data
@@ -64,10 +60,14 @@ current_course = ()
 def load_dataset(path):
     """Loads a dataset from the given file path."""
     try:
-        return pd.read_csv(path)
+        result = pd.read_csv(path)
+        result = result.drop(columns=["Parental_Education_Level", "Internet_Access", "School_Type"])
+        return result
     except FileNotFoundError:
+        print(f"Dataset not found at path: {path}")
         raise FileNotFoundError(f"Dataset not found at path: {path}")
     except Exception as e:
+        print(str(e))
         raise Exception(f"Error loading dataset: {e}")
 
 def preprocess_data(data, encoders=None):
@@ -80,7 +80,6 @@ def preprocess_data(data, encoders=None):
             "Motivation_Level": {"Low": 0, "Medium": 1, "High": 2},
             "Family_Income": {"Low": 0, "Medium": 1, "High": 2},
             "Teacher_Quality": {"Low": 0, "Medium": 1, "High": 2},
-            "Parental_Education_Level": {"High School": 0, "College": 1, "Postgraduate": 2},
             "Distance_from_Home": {"Near": 0, "Moderate": 1, "Far": 2},
             "Peer_Influence": {"Negative": 0, "Neutral": 1, "Positive": 2},
         }
@@ -88,8 +87,6 @@ def preprocess_data(data, encoders=None):
         categorical_cols = [
             "Gender",
             "Learning_Disabilities",
-            "School_Type",
-            "Internet_Access",
             "Extracurricular_Activities",
         ]
 
@@ -432,6 +429,7 @@ def api_get_prediction():
 
         return jsonify({"prediction": prediction}), 200
     except Exception as e:
+        print(str(e))
         return jsonify({"error during prediction": str(e)}), 400
 
 @app.route('/generate-plots', methods=['GET'])

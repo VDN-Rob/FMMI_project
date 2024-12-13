@@ -5,7 +5,7 @@ import CustomSlider from './CustomSlider';
 import CustomDropDown from './CustomDropDown';
 import styles from './styles';
 
-const API_URL = 'http://18.224.25.73';
+const API_URL = 'http://192.168.1.46:5000';
 
 const App: FC = () => {
   const [page, setPage] = useState<string>('home'); // Dit aanpassen als jullie die als eerste pagina willen
@@ -64,7 +64,7 @@ const App: FC = () => {
     "Extracurricular_Activities", "Previous_Scores", "Motivation_Level",
     "Tutoring_Sessions", "Family_Income", "Teacher_Quality", "Peer_Influence",
     "Physical_Activity", "Distance_from_Home", "Gender", "Learning_Disabilities", 
-    "School_Type", "Parental_Education_Level", "Internet_Access", "Access_to_Resources"
+    "Access_to_Resources"
     ]);
 
   const [prediction, setPrediction] = useState<number | null>(null);
@@ -489,9 +489,16 @@ const App: FC = () => {
     // Render content
     return (
       <View style={styles.topContainer}>
-        <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('input')}>
-          <Text style={styles.ButtonText}>Back</Text>
-        </TouchableOpacity>
+        <View style={styles.ButtonRow}>
+          <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('input')}>
+            <Text style={styles.ButtonText}>Back</Text>
+          </TouchableOpacity>
+          <View style={styles.rightContainer}>
+          <TouchableOpacity onPress={handleCleaning} style={styles.button}>
+            <Text style={styles.buttonText}>Go back to main screen</Text>
+          </TouchableOpacity>
+          </View>
+        </View>
         
         <View style={styles.container_p}>
           <View style={styles.header_p}>
@@ -511,9 +518,9 @@ const App: FC = () => {
             )}
           </View>
           
-          <Text style={styles.description}>
+          {/* <Text style={styles.description}>
             This graph shows the 5 factors with the greatest impact on your predicted score.
-          </Text>
+          </Text> */}
 
           <TouchableOpacity style={styles.linkContainer} onPress={() => setPage('explanationgraph')}>
             <Text style={styles.linkText}>
@@ -554,9 +561,6 @@ const App: FC = () => {
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setPage('DetailedGraph')} style={styles.button}>
               <Text style={styles.buttonText}>See full graph with all factors</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleCleaning} style={styles.button}>
-              <Text style={styles.buttonText}>Go back to main screen</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -14,15 +14,21 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         backgroundColor: "rgba(255,255,255,1)",
     },
+    rightContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
+        backgroundColor: "rgba(255,255,255,1)",
+    },
     ButtonBG: {
         width: 0.3 * width,
         height: 0.05 * height,
         backgroundColor: "rgba(44,17,252,0.08)",
         alignItems: "center",
         justifyContent: 'center',
-        margin: 10,
         borderRadius: 20,
-        marginTop: 45
+        marginTop: 0.05*height
     },
     ButtonText: {
         display: 'flex',
@@ -263,7 +269,6 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(44,17,252,0.08)",
         alignItems: 'flex-start',
         justifyContent: 'center',
-        margin: 10,
         borderRadius: 20,
         borderColor: "rgba(0,0,0,1)",
         borderWidth: 1
@@ -296,8 +301,8 @@ const styles = StyleSheet.create({
         overflow: 'hidden', // Prevents content spilling out of rounded edges
     },
     chartImage: {
-        width: 400,
-        height: 400,
+        width: 350,
+        height: 350,
     },
     loadingText2: {
         fontSize: 16,
@@ -322,7 +327,7 @@ const styles = StyleSheet.create({
         fontWeight: "400",
         textAlign: "center",
         alignItems: "center",
-        marginTop: 100,
+        marginTop: 50,
         marginBottom: 10,
     },
     title_margin_top: {
@@ -380,10 +385,14 @@ const styles = StyleSheet.create({
     title_p: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 20,
         textAlign: 'center',
     },
-
+    ButtonRow: {
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "center",
+        maxHeight: 0.1 * height,
+    },
     // Chart container
     chartContainer_p: {
         flex: 1,
@@ -446,6 +455,14 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         paddingHorizontal: 24,
         marginBottom: 8,
+    },
+    button_p: {
+        backgroundColor: 'rgba(44,17,252,0.08)',
+        borderRadius: 20,
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        marginBottom: 8,
+        height: 0.5 * height
     },
     buttonText: {
         color: 'rgba(0,0,0,1)',
