@@ -149,6 +149,7 @@ def plot_feature_effect(feature_name):
             feature_range = np.arange(min_value, max_value + step, step)
 
         predicted_scores = []
+        highest_score = ('', 0)
         for value in feature_range:
             if pd.isna(value):  # Skip NaN values
                 continue
@@ -165,6 +166,8 @@ def plot_feature_effect(feature_name):
             # Predict the score
             predicted_score = model.predict(processed_temp_input)[0]
             predicted_scores.append(predicted_score)
+            if predicted_score > highest_score[1]:
+                highest_score = (value, predicted_score)
 
 
 
@@ -189,26 +192,34 @@ def plot_feature_effect(feature_name):
         plt.close()
 
         # Add explanation text TODO
-        explanation = f"The feature '{feature_name}' has been analyzed. The graph shows how varying its values influences the predicted output."
+        if not state:
+            if (user_input_copy[feature_name] != highest_score[0]) and (predicted_score >= highest_score[1]):
+                explanation = f"You should change '{feature_name}' to '{highest_score[0]}'. Your score will then evolve to '{highest_score[1]}'"
+            else:
+                explanation = f"You should not change anything"
+
+        else:
+            explanation = f"The feature '{feature_name}' has been analyzed. The graph shows how varying its values influences the predicted output."
 
         return (chart_path, explanation)
     except Exception as e:
         print("Error: " + feature_name + " " + str(e))
         return e
-
+    
 def plot_waterfalls():
     global shap_explanation
 
     try:
+        shap_explanation_copy = deepcopy(shap_explanation)
         # Ensure that global_shap_values is in the correct format
         if not isinstance(shap_explanation, shap.Explanation):
             raise ValueError("SHAP values must be a shap.Explanation object.")
         
         # Extract data for the Plotly waterfall chart
-        feature_names_5 = shap_explanation.feature_names[:5]
-        shap_values_5 = shap_explanation.values[:5]
-        other_values_5 = np.sum(shap_explanation.values[5:])
-        base_value_5 = shap_explanation.base_values[0]
+        feature_names_5 = shap_explanation_copy.feature_names[:5]
+        shap_values_5 = shap_explanation_copy.values[:5]
+        other_values_5 = np.sum(shap_explanation_copy.values[5:])
+        base_value_5 = shap_explanation_copy.base_values[0]
 
         # Prepare data for the waterfall plot
         values_5 = [base_value_5]  # Start with the base value
@@ -256,9 +267,9 @@ def plot_waterfalls():
         fig_5.write_image(chart_path_5)
 
         # Extract data for the Plotly waterfall chart
-        feature_names_19 = shap_explanation.feature_names
-        shap_values_19 = shap_explanation.values
-        base_value_19 = shap_explanation.base_values[0]
+        feature_names_19 = shap_explanation_copy.feature_names
+        shap_values_19 = shap_explanation_copy.values
+        base_value_19 = shap_explanation_copy.base_values[0]
 
         # Prepare data for the waterfall plot
         values_19 = [base_value_19]  # Start with the base value
@@ -403,18 +414,17 @@ def api_get_prediction():
 
     try:
         user_input_copy = deepcopy(user_input)
-        user_input_copy.pop("Study_Points", None)  # Remove "Study_Points" if it exists; do nothing otherwise
+        user_input_copy.pop("Study_Points", None)
         input_df = pd.DataFrame([user_input_copy])
         preprocessed_data, _ = preprocess_data(input_df, encoders)
         prediction = model.predict(preprocessed_data)[0]
 
         explainer = shap.TreeExplainer(model)
+        # Extract the SHAP values and feature names
+        shap_values = explainer.shap_values(preprocessed_data)[0]
+        feature_names = input_df.columns
 
         if state:
-            # Extract the SHAP values and feature names
-            shap_values = explainer.shap_values(preprocessed_data)[0]
-            feature_names = input_df.columns
-
             # Get the indices that would sort the SHAP values by absolute value (descending order)
             sorted_indices = np.argsort(-np.abs(shap_values))
 
@@ -428,6 +438,13 @@ def api_get_prediction():
                 base_values=explainer.expected_value,
                 data=preprocessed_data,
                 feature_names=sorted_feature_names
+            )
+        else:
+            shap_explanation = shap.Explanation(
+                values = shap_values,
+                base_values=explainer.expected_value,
+                data=preprocessed_data,
+                feature_names=feature_names
             )
 
         return jsonify({"prediction": prediction}), 200
@@ -444,7 +461,7 @@ def generate_plots():
 
     try:
         result = {}
-
+        
         for feature in featuresList:
             result[feature] = plot_feature_effect(feature)
         
@@ -499,7 +516,7 @@ def api_get_explanation():
         base_value = exp.base_values if isinstance(exp.base_values, list) else exp.base_values.tolist()
 
         return jsonify({
-            "defaults": deepcopy(defaults), 
+            "state": state,
             "explanation": {
                 'features': features, 
                 'values': values, 

@@ -15,7 +15,7 @@ const App: FC = () => {
   const [currentCourse, setCurrentCourse] = useState<string>('');
   const [studyPoints, setStudyPoints] = useState<string>('30');
   const [allCourses, setAllCourses] = useState<string[]>([]);
-  let [l, setL] = useState(19);
+  let [l, setL] = useState(16);
 
   const handleCourseSelect = (course: string) => {
     setCurrentCourse(course);
@@ -163,8 +163,9 @@ const App: FC = () => {
 
       setLoadingMessage('Getting explanations...');
       const response_exp = await axios.get(`${API_URL}/get_explanation`);
+      console.log(response_exp.data)
       setExplanation(response_exp.data);
-      setFeatureList(response_exp.data.explanation.features) // TOKNOW: remove if not sorting by relevance
+      setFeatureList(response_exp.data.explanation.features)
       setL(featuresList.length)
 
       setPage('prediction');
@@ -530,7 +531,11 @@ const App: FC = () => {
 
           {/* Factors Impact Section */}
           <View style={styles.factorsContainer}>
-          {explanation && ['highest', 'second highest', 'third highest', 'fourth highest', 'fifth highest'].map((rank, index) => {
+          {explanation && (explanation.state ? 
+                            ['the highest', 'the second highest', 'the third highest', 'the fourth highest', 'the fifth highest'] 
+                            : 
+                            ['some', 'some', 'some', 'some', 'some']
+                          ).map((rank, index) => {
             // Safely access values and features with proper fallback
             const value = explanation.explanation.values[index]
             const feature = explanation.explanation.features[index]
@@ -548,7 +553,7 @@ const App: FC = () => {
 
             return (
               <Text key={index} style={styles.factorText}>
-                • {mappedFeature} has the {rank} impact: it {impact} the predicted score by {score} percent.
+                • {mappedFeature} has {rank} impact: it {impact} the predicted score by {score} percent.
               </Text>
             );
           })}
@@ -645,7 +650,6 @@ const App: FC = () => {
         </View>
     );
   }
-
 
   if (page === 'explanationgraph') {
     return (
