@@ -409,24 +409,26 @@ def api_get_prediction():
         prediction = model.predict(preprocessed_data)[0]
 
         explainer = shap.TreeExplainer(model)
-        # Extract the SHAP values and feature names
-        shap_values = explainer.shap_values(preprocessed_data)[0]
-        feature_names = input_df.columns
 
-        # Get the indices that would sort the SHAP values by absolute value (descending order)
-        sorted_indices = np.argsort(-np.abs(shap_values))
+        if state:
+            # Extract the SHAP values and feature names
+            shap_values = explainer.shap_values(preprocessed_data)[0]
+            feature_names = input_df.columns
 
-        # Sort feature names and SHAP values using the sorted indices
-        sorted_feature_names = np.array(feature_names)[sorted_indices]
-        sorted_shap_values = shap_values[sorted_indices]
+            # Get the indices that would sort the SHAP values by absolute value (descending order)
+            sorted_indices = np.argsort(-np.abs(shap_values))
 
-        # Wrap the reordered values back into a SHAP Explanation object (optional)
-        shap_explanation = shap.Explanation(
-            values=sorted_shap_values,
-            base_values=explainer.expected_value,
-            data=preprocessed_data,
-            feature_names=sorted_feature_names
-        )
+            # Sort feature names and SHAP values using the sorted indices
+            sorted_feature_names = np.array(feature_names)[sorted_indices]
+            sorted_shap_values = shap_values[sorted_indices]
+
+            # Wrap the reordered values back into a SHAP Explanation object (optional)
+            shap_explanation = shap.Explanation(
+                values=sorted_shap_values,
+                base_values=explainer.expected_value,
+                data=preprocessed_data,
+                feature_names=sorted_feature_names
+            )
 
         return jsonify({"prediction": prediction}), 200
     except Exception as e:
