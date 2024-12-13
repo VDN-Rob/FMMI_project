@@ -23,6 +23,7 @@ encoders = None
 model = None
 dataset = None
 shap_explanation = None
+state = True # True = good state, False = bad state
 
 defaults = {
             "Hours_Studied": 20,
@@ -508,7 +509,20 @@ def api_get_explanation():
         print(str(e))
         return jsonify({"error during cleaning": str(e)}), 400
 
+@app.route('/toggle_state', methods=['GET'])
+def api_toggle_state():
+    global state
 
+    try:
+        state = not state
+        if state:
+            return "State is now in good explanation mode", 200
+        else:
+            return "State is now in bad explanation mode", 200
+        
+    except Exception as e:
+        return jsonify({"error during cleaning": str(e)}), 400
+    
 # Main entry point
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
