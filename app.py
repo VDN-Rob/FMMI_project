@@ -52,6 +52,25 @@ featuresList = [
     "Physical_Activity", "Distance_from_Home", "Gender", "Learning_Disabilities", "Access_to_Resources"
     ]
 
+mapping_explanation = {
+    "Hours_Studied": "the amount you study",
+    "Attendance": "your attendance rate",
+    "Parental_Involvement": "your parental involvement",
+    "Sleep_Hours": "the amount you sleep",
+    "Extracurricular_Activities": "you partaking in extracurricular activities",
+    "Previous_Scores": "your past scoring",
+    "Motivation_Level": "your motivation level",
+    "Tutoring_Sessions": "the amount of tutoring sessions you have",
+    "Family_Income": "your family income",
+    "Teacher_Quality": "the quality of your teachers",
+    "Peer_Influence": "your friend's influence",
+    "Physical_Activity": "the amount of physical activity you do",
+    "Distance_from_Home": "your home to school distance",
+    "Gender": "your gender",
+    "Learning_Disabilities": "your learning disabilities",
+    "Study_Points": "the amount of study points this course is",
+}
+
 # Store user data
 user_input = {}
 course_selection = {}
@@ -150,6 +169,7 @@ def plot_feature_effect(feature_name):
 
         predicted_scores = []
         highest_score = ('', 0)
+        original_score = 0
         for value in feature_range:
             if pd.isna(value):  # Skip NaN values
                 continue
@@ -166,17 +186,21 @@ def plot_feature_effect(feature_name):
             # Predict the score
             predicted_score = model.predict(processed_temp_input)[0]
             predicted_scores.append(predicted_score)
+            if value == user_input_copy[feature_name]:
+                original_score = predicted_score
             if predicted_score > highest_score[1]:
                 highest_score = (value, predicted_score)
 
 
-
+        user_value = user_input_copy[feature_name]
         # Create the plot
         plt.figure(figsize=(10, 6))
         plt.plot(feature_range, predicted_scores, marker='o', linestyle='-')
+        plt.axvline(x=user_value, color='red', linestyle='--', linewidth=2, label=f"You inputted: {user_value}")
         plt.title(f"Effect of {feature_name} on Predicted Score")
         plt.xlabel(feature_name)
         plt.ylabel("Predicted Output")
+        plt.legend()
         plt.grid(True)
 
         # Save the figure to a file
@@ -191,10 +215,10 @@ def plot_feature_effect(feature_name):
         plt.savefig(chart_path)
         plt.close()
 
-        # Add explanation text TODO
+        # Add explanation text TODO good
         if not state:
-            if (user_input_copy[feature_name] != highest_score[0]) and (predicted_score >= highest_score[1]):
-                explanation = f"You should change '{feature_name}' to '{highest_score[0]}'. Your score will then evolve to '{highest_score[1]}'"
+            if (user_input_copy[feature_name] != highest_score[0]) and (original_score < highest_score[1]):
+                explanation = f"You should change {mapping_explanation.get(feature_name, feature_name)} to {highest_score[0]}. Your score will then evolve to {highest_score[1]}%"
             else:
                 explanation = f"You should not change anything"
 
@@ -461,7 +485,7 @@ def generate_plots():
 
     try:
         result = {}
-        
+
         for feature in featuresList:
             result[feature] = plot_feature_effect(feature)
         
