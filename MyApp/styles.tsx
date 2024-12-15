@@ -362,8 +362,9 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        margin: 20,
-        alignItems: 'center'
+        margin: 16,
+        alignItems: 'center',
+        width: 0.8 * width
     },
     Explanation: {
         display: "flex",
@@ -389,7 +390,7 @@ const styles = StyleSheet.create({
     // Header
     header_p: {
         alignItems: 'center',
-        marginBottom: 16,
+        margin: 0.05 * height,
     },
     title_p: {
         fontSize: 24,

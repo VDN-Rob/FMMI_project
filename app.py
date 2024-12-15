@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor
 import shap
 from flask_cors import CORS
 import matplotlib.pyplot as plt
@@ -155,7 +155,7 @@ def split_data(data, target="Exam_Score", test_size=0.2, random_state=42):
 def train_model(X_train, y_train):
     """Trains a Decision Tree Regressor on the training data."""
     try:
-        model = DecisionTreeRegressor()
+        model = RandomForestRegressor()
         model.fit(X_train, y_train)
         return model
     except Exception as e:
@@ -177,6 +177,19 @@ def plot_feature_effect(feature_name):
             max_value = dataset[feature_name].max()
             feature_range = np.arange(min_value, max_value + step, step)
 
+        categorical_features = [
+            "Parental_Involvement", 
+            "Access_to_Resources", 
+            "Motivation_Level", 
+            "Family_Income",
+            "Teacher_Quality",
+            "Distance_from_Home",
+            "Peer_Influence",
+            "Gender",
+            "Learning_Disabilities",
+            "Extracurricular_Activities",
+        ]
+
         predicted_scores = []
         original_index = None
         original_score = 0
@@ -185,6 +198,8 @@ def plot_feature_effect(feature_name):
         average_score = None
 
         index = 0
+        value_to_score = {}
+
         for value in feature_range:
             if pd.isna(value):  # Skip NaN values
                 continue
@@ -201,6 +216,11 @@ def plot_feature_effect(feature_name):
             # Predict the score
             predicted_score = model.predict(processed_temp_input)[0]
             predicted_scores.append(predicted_score)
+
+            # Store the predicted score for each value
+            if value not in value_to_score:
+                value_to_score[value] = []
+            value_to_score[value].append(predicted_score)
             
             if value == defaults[feature_name]:
                 average_score = predicted_score
@@ -212,17 +232,42 @@ def plot_feature_effect(feature_name):
 
             index += 1
 
-
         user_value = user_input_copy[feature_name]
-        # Create the plot
-        plt.figure(figsize=(10, 6))
-        plt.plot(feature_range, predicted_scores, marker='o', linestyle='-')
-        plt.axvline(x=user_value, color='red', linestyle='--', linewidth=2, label=f"You inputted: {user_value}")
-        plt.title(f"Effect of {feature_name} on Predicted Score")
-        plt.xlabel(feature_name)
-        plt.ylabel("Predicted Output")
-        plt.legend()
-        plt.grid(True)
+
+        # Check if the feature is categorical
+        if feature_name in categorical_features:
+            # Create a bar chart for categorical features
+            plt.figure(figsize=(10, 6))
+            
+            # For each category, calculate the average predicted score
+            categories = list(value_to_score.keys())
+            avg_scores = [np.mean(value_to_score[cat]) for cat in categories]
+            
+            # Plot the bar chart
+            plt.bar(categories, avg_scores, color='skyblue', edgecolor='black', alpha=0.7)
+
+            plt.ylim(min(avg_scores) - 1, max(avg_scores) + 1)
+
+            
+            # Add a vertical line for the user's input
+            plt.axvline(x=categories.index(user_value), color='red', linestyle='--', linewidth=2, label=f"Your input: {user_value}")
+            
+            plt.title(f"Predicted Scores by {feature_name}")
+            plt.xlabel(feature_name)
+            plt.ylabel("Predicted Score")
+            plt.xticks(rotation=45, ha="right")  # Rotate x-axis labels for readability
+            plt.legend()
+            plt.grid(True)
+        else:
+            # Create the plot for continuous features
+            plt.figure(figsize=(10, 6))
+            plt.plot(feature_range, predicted_scores, marker='o', linestyle='-')
+            plt.axvline(x=user_value, color='red', linestyle='--', linewidth=2, label=f"You inputted: {user_value}")
+            plt.title(f"Effect of {feature_name} on Predicted Score")
+            plt.xlabel(feature_name)
+            plt.ylabel("Predicted Output")
+            plt.legend()
+            plt.grid(True)
 
         # Save the figure to a file
         output_dir = 'static/charts'
@@ -326,15 +371,17 @@ def plot_feature_effect(feature_name):
                             explanation = (
                                 f"{mapping_explanation.get(feature_name, feature_name).capitalize()} {'increased' if shap_value_of_explanation > 0 else 'decreased'} your score by "
                                 f"{shap_value_of_explanation}%. Improving this feature further to {highest_score[0]} could help, "
-                                f"increasing your score by an additional {highest_score[1] - original_score}%."
+                                f"increasing your score by an additional {round(highest_score[1] - original_score, 2)}%."
                             )
                 else:
                     average_value = dataset[feature_name].mean()
+                    feature_index = shap_explanation.feature_names.index(feature_name) 
+                    shap_value_of_explanation = round(shap_explanation.values[feature_index], 2)
                     explanation = (
-                        f"{mapping_explanation.get(feature_name, feature_name).capitalize()} affected your score by "
-                        f"{round(original_score - highest_score[1], 2)}%. Improving this area could significantly increase your "
+                        f"{mapping_explanation.get(feature_name, feature_name).capitalize()} affected your score by {shap_value_of_explanation}%."
+                        f" Improving this area could significantly increase your "
                         f"performance. For example, raising it to the average ({round(average_value, 2)}) could boost your score to "
-                        f"{round(average_score, 2)}%."
+                        f"{round(average_score, 2)}%, or raising it to {highest_score[0]} could increase your score to {highest_score[1]}."
                     )
 
 
