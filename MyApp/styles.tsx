@@ -30,6 +30,15 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         marginTop: 0.05*height
     },
+    buttonBG: {
+        width: 0.6 * width,
+        height: 0.05 * height,
+        backgroundColor: "rgba(44,17,252,0.08)",
+        alignItems: "center",
+        justifyContent: 'center',
+        borderRadius: 20,
+        marginTop: 0.05*height
+    },
     ButtonText: {
         display: 'flex',
         flexDirection: 'column',

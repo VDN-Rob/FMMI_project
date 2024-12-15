@@ -5,7 +5,7 @@ import CustomSlider from './CustomSlider';
 import CustomDropDown from './CustomDropDown';
 import styles from './styles';
 
-const API_URL = 'http://18.224.25.73';
+const API_URL = 'http://192.168.1.46:5000';
 
 const App: FC = () => {
   const [page, setPage] = useState<string>('home'); // Dit aanpassen als jullie die als eerste pagina willen
@@ -495,8 +495,8 @@ const App: FC = () => {
             <Text style={styles.ButtonText}>Back</Text>
           </TouchableOpacity>
           <View style={styles.rightContainer}>
-          <TouchableOpacity onPress={handleCleaning} style={styles.button}>
-            <Text style={styles.buttonText}>Go back to main screen</Text>
+          <TouchableOpacity onPress={handleCleaning} style={styles.buttonBG}>
+            <Text style={styles.ButtonText}>Go back to main screen</Text>
           </TouchableOpacity>
           </View>
         </View>
