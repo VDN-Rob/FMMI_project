@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { useState, FC, useEffect } from 'react';
 import { View, Text, TextInput, ScrollView, ActivityIndicator, Alert, Image, TouchableOpacity, FlatList, ImageBackground } from 'react-native';
 import axios from 'axios';
 import CustomSlider from './CustomSlider';
@@ -63,9 +63,26 @@ const App: FC = () => {
     "Hours_Studied", "Attendance", "Parental_Involvement", "Sleep_Hours",
     "Extracurricular_Activities", "Previous_Scores", "Motivation_Level",
     "Tutoring_Sessions", "Family_Income", "Teacher_Quality", "Peer_Influence",
-    "Physical_Activity", "Distance_from_Home", "Gender", "Learning_Disabilities", 
-    "Access_to_Resources"
-    ]);
+    "Physical_Activity", "Distance_from_Home", "Gender", "Learning_Disabilities"
+  ]);
+
+  // Define actionable features
+  const actionableFeatures = new Set([
+    "Hours_Studied", "Attendance", "Parental_Involvement", "Sleep_Hours",
+    "Extracurricular_Activities", "Motivation_Level", "Tutoring_Sessions",
+    "Physical_Activity", "Peer_Influence"
+  ]);
+
+  
+  const handleFeatureList = (list: string[]) => {
+    // Sort features into actionable and non-actionable while maintaining order
+    const sortedFeatures = [
+      ...list.filter(feature => actionableFeatures.has(feature)), // Actionable first
+      ...list.filter(feature => !actionableFeatures.has(feature)) // Non-actionable next
+    ];
+  
+    setFeatureList(sortedFeatures);
+  };
 
   const [prediction, setPrediction] = useState<number | null>(null);
   const [chartUrl, setChartUrl] = useState<Record<string, any>>({
@@ -163,9 +180,15 @@ const App: FC = () => {
 
       setLoadingMessage('Getting explanations...');
       const response_exp = await axios.get(`${API_URL}/get_explanation`);
-      console.log(response_exp.data)
       setExplanation(response_exp.data);
-      setFeatureList(response_exp.data.explanation.features)
+
+      if (response_exp.data.explanation.state) {
+        handleFeatureList(response_exp.data.explanation.features)
+      }
+      else {
+        setFeatureList(response_exp.data.explanation.features)
+      }
+
       setL(featuresList.length)
 
       setPage('prediction');
@@ -565,8 +588,7 @@ const App: FC = () => {
         </View>
           {/* Action Buttons */}
           <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={() => {console.log(featuresList)
-              setPage('improvements')}} style={styles.button}>
+            <TouchableOpacity onPress={() => {setPage('improvements')}} style={styles.button}>
               <Text style={styles.buttonText}>How to improve my result?</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setPage('DetailedGraph')} style={styles.button}>

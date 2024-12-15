@@ -29,7 +29,6 @@ defaults = {
             "Hours_Studied": 20,
             "Attendance": 80,
             "Parental_Involvement": "Medium",
-            "Access_to_Resources": "Medium",
             "Extracurricular_Activities": "Yes",
             "Sleep_Hours": 7,
             "Previous_Scores": 75,
@@ -49,7 +48,7 @@ featuresList = [
     "Hours_Studied", "Attendance", "Parental_Involvement", "Sleep_Hours",
     "Extracurricular_Activities", "Previous_Scores", "Motivation_Level",
     "Tutoring_Sessions", "Family_Income", "Teacher_Quality", "Peer_Influence",
-    "Physical_Activity", "Distance_from_Home", "Gender", "Learning_Disabilities", "Access_to_Resources"
+    "Physical_Activity", "Distance_from_Home", "Gender", "Learning_Disabilities"
     ]
 
 mapping_explanation = {
@@ -90,7 +89,7 @@ def load_dataset(path):
     """Loads a dataset from the given file path."""
     try:
         result = pd.read_csv(path)
-        result = result.drop(columns=["Parental_Education_Level", "Internet_Access", "School_Type"])
+        result = result.drop(columns=["Parental_Education_Level", "Internet_Access", "School_Type", "Access_to_Resources"])
         return result
     except FileNotFoundError:
         print(f"Dataset not found at path: {path}")
@@ -106,7 +105,6 @@ def preprocess_data(data, encoders=None):
 
         ordinal_mappings = {
             "Parental_Involvement": {"Low": 0, "Medium": 1, "High": 2},
-            "Access_to_Resources": {"Low": 0, "Medium": 1, "High": 2},
             "Motivation_Level": {"Low": 0, "Medium": 1, "High": 2},
             "Family_Income": {"Low": 0, "Medium": 1, "High": 2},
             "Teacher_Quality": {"Low": 0, "Medium": 1, "High": 2},
@@ -179,7 +177,6 @@ def plot_feature_effect(feature_name):
 
         categorical_features = [
             "Parental_Involvement", 
-            "Access_to_Resources", 
             "Motivation_Level", 
             "Family_Income",
             "Teacher_Quality",
