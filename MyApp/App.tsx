@@ -228,7 +228,7 @@ const App: FC = () => {
               maximumValue={maxValue}
               step={step_size}
           />
-          <Text style={styles.sliderValue}>Value: {value}</Text>
+          <Text style={styles.sliderValue}>Value: {value === maxValue ? `${value}+` : value}</Text>
         </View>
     );
   };
@@ -425,7 +425,7 @@ const App: FC = () => {
               formData['Sleep_Hours'],
               'Sleep_Hours',
               0,
-              15,
+              10,
               1
           )}
           {renderDropdown(
@@ -438,11 +438,11 @@ const App: FC = () => {
               formData['Tutoring_Sessions'],
               'Tutoring_Sessions',
               0,
-              10,
+              8,
               1
           )}
           {renderDropdown(
-              'Wht is the level of your family income?',
+              'What is the level of your family income?',
               'Family_Income',
               dropdownOptions.lmh
           )}
@@ -461,7 +461,7 @@ const App: FC = () => {
               formData['Physical_Activity'],
               'Physical_Activity',
               0,
-              20,
+              6,
               1
           )}
           {renderDropdown(

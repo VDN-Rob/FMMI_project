@@ -71,6 +71,15 @@ mapping_explanation = {
     "Study_Points": "the amount of study points this course is",
 }
 
+ing_mapping = {
+    "Hours_Studied": "hours of studying and you would likely still score the same",
+    "Attendance": "% attendance rate and you would likely still score the same",
+    "Sleep_Hours": "hours of sleep and you would likely still score the same",
+    "Previous_Scores": "... Nah, you cannot change your past scoring, I guess",
+    "Tutoring_Sessions": "tutoring sessions and you would likely still score the same",
+    "Physical_Activity": "hours of physical activity and you would likely still score the same",
+}
+
 # Store user data
 user_input = {}
 course_selection = {}
@@ -94,6 +103,7 @@ def preprocess_data(data, encoders=None):
     """Preprocesses the dataset by encoding and handling missing values."""
     try:
         data = data.copy()
+
         ordinal_mappings = {
             "Parental_Involvement": {"Low": 0, "Medium": 1, "High": 2},
             "Access_to_Resources": {"Low": 0, "Medium": 1, "High": 2},
@@ -109,7 +119,7 @@ def preprocess_data(data, encoders=None):
             "Learning_Disabilities",
             "Extracurricular_Activities",
         ]
-
+        
         # Apply ordinal mappings
         for col, mapping in ordinal_mappings.items():
             if col in data.columns:
@@ -168,8 +178,13 @@ def plot_feature_effect(feature_name):
             feature_range = np.arange(min_value, max_value + step, step)
 
         predicted_scores = []
-        highest_score = ('', 0)
+        original_index = None
         original_score = 0
+
+        highest_score = ('', 0, 0)
+        average_score = None
+
+        index = 0
         for value in feature_range:
             if pd.isna(value):  # Skip NaN values
                 continue
@@ -186,10 +201,16 @@ def plot_feature_effect(feature_name):
             # Predict the score
             predicted_score = model.predict(processed_temp_input)[0]
             predicted_scores.append(predicted_score)
+            
+            if value == defaults[feature_name]:
+                average_score = predicted_score
             if value == user_input_copy[feature_name]:
                 original_score = predicted_score
+                original_index = index
             if predicted_score > highest_score[1]:
-                highest_score = (value, predicted_score)
+                highest_score = (value, predicted_score, index)
+
+            index += 1
 
 
         user_value = user_input_copy[feature_name]
@@ -223,7 +244,101 @@ def plot_feature_effect(feature_name):
                 explanation = f"You should not change anything"
 
         else:
-            explanation = f"The feature '{feature_name}' has been analyzed. The graph shows how varying its values influences the predicted output."
+            # Handle numeric and categorical features differently
+            if dataset[feature_name].dtype == 'object' or isinstance(dataset[feature_name].iloc[0], str):
+                # Feature is categorical
+                average_value = dataset[feature_name].value_counts().idxmax()  # Get the most common category
+                user_category = user_value  # User's category value (e.g., "Near")
+                
+                if highest_score[1] > original_score:
+                    explanation = (
+                        f"{mapping_explanation.get(feature_name, feature_name).capitalize()} differs from the optimal value "
+                        f"(most optimal: '{average_value}'). You might consider aligning it closer to the optimal value "
+                        f"if feasible, though this depends on other factors. This would, however, increase your score by {round(highest_score[1] - original_score, 2)}%."
+                    )
+                else:
+                    if user_category == average_value:
+                        explanation = (
+                            f"{mapping_explanation.get(feature_name, feature_name).capitalize()} is typical for most users "
+                            f"(category: '{average_value}'). Since your value is also '{user_category}', "
+                            f"there’s no significant recommendation to change it."
+                        )
+                    else:
+                        explanation = (
+                            f"'{average_value}' is typical for most users "
+                            f"whereas your value is '{user_category}'. However, as changing your your habits does not seem to imply changes in the predicted score, "
+                            f"there’s no significant recommendation to change it."
+                        )
+            else:
+                # Feature is numeric
+                if original_score >= average_score:
+                    if original_score == highest_score[1]:
+                        if original_index > highest_score[2]:
+                            feature_index = shap_explanation.feature_names.index(feature_name)
+                            shap_value_of_explanation = round(shap_explanation.values[feature_index], 2)
+
+                            explanation = (
+                                f"{mapping_explanation.get(feature_name, feature_name).capitalize()} increased your score by "
+                                f"{shap_value_of_explanation}%. As, according to the model, this already provides the highest possible score if you were to keep the other features consistent, "
+                                f"you might focus on {', '.join([mapping_explanation.get(f, f) for f in shap_explanation.feature_names[:3] if f != feature_name])} and "
+                                f"{[mapping_explanation.get(shap_explanation.feature_names[3], shap_explanation.feature_names[3]) if shap_explanation.feature_names[3] != feature_name else mapping_explanation.get(shap_explanation.feature_names[4], shap_explanation.feature_names[4])][0]} instead. "
+                                f"It should also be noted that you may dial back to {highest_score[2]} {ing_mapping.get(feature_name, feature_name)}."
+                            )
+                        else:
+                            feature_index = shap_explanation.feature_names.index(feature_name)
+                            shap_value_of_explanation = round(shap_explanation.values[feature_index], 2)
+
+                            explanation = (
+                                f"{mapping_explanation.get(feature_name, feature_name).capitalize()} increased your score by "
+                                f"{shap_value_of_explanation}%. As, according to the model, this already provides the highest possible score if you were to keep the other features consistent, "
+                                f"you might focus on {', '.join([mapping_explanation.get(f, f) for f in shap_explanation.feature_names[:3] if f != feature_name])} and "
+                                f"{[mapping_explanation.get(shap_explanation.feature_names[3], shap_explanation.feature_names[3]) if shap_explanation.feature_names[3] != feature_name else mapping_explanation.get(shap_explanation.feature_names[4], shap_explanation.feature_names[4])][0]} instead."
+                            )
+
+                    elif (highest_score[1] - original_score) < 1:
+                        feature_index = shap_explanation.feature_names.index(feature_name)
+                        shap_value_of_explanation = round(shap_explanation.values[feature_index], 2)
+
+                        explanation = (
+                            f"{mapping_explanation.get(feature_name, feature_name).capitalize()} {'increased' if shap_value_of_explanation > 0 else 'decreased'} your score by "
+                            f"{shap_value_of_explanation}%. Normally, improving this feature further could help, "
+                            f"but as the changes would be low ({round(highest_score[1] - original_score, 2)}% increase), "
+                            f"you might focus on {', '.join([mapping_explanation.get(f, f) for f in shap_explanation.feature_names[:3] if f != feature_name])} and "
+                            f"{[mapping_explanation.get(shap_explanation.feature_names[3], shap_explanation.feature_names[3]) if shap_explanation.feature_names[3] != feature_name else mapping_explanation.get(shap_explanation.feature_names[4], shap_explanation.feature_names[4])][0]} instead."
+                        )
+                        # TODO: make better recomendations
+                    else:
+                        if ((highest_score[1] - original_score) / highest_score[1]) > 0.9:
+                            feature_index = shap_explanation.feature_names.index(feature_name)
+                            shap_value_of_explanation = round(shap_explanation.values[feature_index], 2)
+
+                            explanation = (
+                                f"{mapping_explanation.get(feature_name, feature_name).capitalize()} {'increased' if shap_value_of_explanation > 0 else 'decreased'} your score by "
+                                f"{shap_value_of_explanation}%. Normally, improving this feature further could help, "
+                                f"but due to the limitations of the model and the fact that you score higher than the average ({round(original_score - average_score, 2)} units above), "
+                                f"you might focus on {', '.join([mapping_explanation.get(f, f) for f in shap_explanation.feature_names[:3] if f != feature_name])} and "
+                                f"{[mapping_explanation.get(shap_explanation.feature_names[3], shap_explanation.feature_names[3]) if shap_explanation.feature_names[3] != feature_name else mapping_explanation.get(shap_explanation.feature_names[4], shap_explanation.feature_names[4])][0]} instead."
+                            )
+                        else:
+                            feature_index = shap_explanation.feature_names.index(feature_name)
+                            shap_value_of_explanation = round(shap_explanation.values[feature_index], 2)
+
+                            explanation = (
+                                f"{mapping_explanation.get(feature_name, feature_name).capitalize()} {'increased' if shap_value_of_explanation > 0 else 'decreased'} your score by "
+                                f"{shap_value_of_explanation}%. Improving this feature further to {highest_score[0]} could help, "
+                                f"increasing your score by an additional {highest_score[1] - original_score}%."
+                            )
+                else:
+                    average_value = dataset[feature_name].mean()
+                    explanation = (
+                        f"{mapping_explanation.get(feature_name, feature_name).capitalize()} affected your score by "
+                        f"{round(original_score - highest_score[1], 2)}%. Improving this area could significantly increase your "
+                        f"performance. For example, raising it to the average ({round(average_value, 2)} units) could boost your score to "
+                        f"{round(average_score, 2)}%."
+                    )
+
+
+            # explanation = f"The feature '{feature_name}' has been analyzed. The graph shows how varying its values influences the predicted output."
 
         return (chart_path, explanation)
     except Exception as e:
