@@ -301,8 +301,9 @@ def plot_feature_effect(feature_name):
                 else:
                     if user_category == average_value:
                         explanation = (
-                            f"{mapping_explanation.get(feature_name, feature_name).capitalize()} is typical for most users "
-                            f"(category: '{average_value}'). Since your value is also '{user_category}', "
+                            #f"{mapping_explanation.get(feature_name, feature_name).capitalize()} is typical for most users "
+                            #f"(category: '{average_value}')." +
+                            f"Since your value is '{user_category}', "
                             f"there’s no significant recommendation to change it."
                         )
                     else:
