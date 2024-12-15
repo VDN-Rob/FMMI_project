@@ -333,7 +333,7 @@ def plot_feature_effect(feature_name):
                     explanation = (
                         f"{mapping_explanation.get(feature_name, feature_name).capitalize()} affected your score by "
                         f"{round(original_score - highest_score[1], 2)}%. Improving this area could significantly increase your "
-                        f"performance. For example, raising it to the average ({round(average_value, 2)} units) could boost your score to "
+                        f"performance. For example, raising it to the average ({round(average_value, 2)}) could boost your score to "
                         f"{round(average_score, 2)}%."
                     )
 

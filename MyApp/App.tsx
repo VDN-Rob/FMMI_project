@@ -5,7 +5,7 @@ import CustomSlider from './CustomSlider';
 import CustomDropDown from './CustomDropDown';
 import styles from './styles';
 
-const API_URL = 'http://192.168.1.46:5000';
+const API_URL = 'http://18.224.25.73';
 
 const App: FC = () => {
   const [page, setPage] = useState<string>('home'); // Dit aanpassen als jullie die als eerste pagina willen
@@ -228,7 +228,9 @@ const App: FC = () => {
               maximumValue={maxValue}
               step={step_size}
           />
-          <Text style={styles.sliderValue}>Value: {value === maxValue ? `${value}+` : value}</Text>
+          <Text style={styles.sliderValue}>
+            Value: {value === maxValue ? `${value}+` : value === minValue ? `${value}-` : value}
+          </Text>
         </View>
     );
   };
@@ -393,20 +395,23 @@ const App: FC = () => {
               'How many hours do you study per week (excluding classes) for this course?',
               formData['Hours_Studied'],
               'Hours_Studied',
-              0,
+              1,
               44,
               1
           )}
           {renderSlider(
               'What is your attendance rate for this course (%)?',
               formData['Attendance'],
-              'Attendance'
+              'Attendance',
+              60,
+              100,
+              1
           )}
           {renderSlider(
               'Previous Year Score',
               formData['Previous_Scores'],
               'Previous_Scores',
-              0,
+              50,
               100,
               1
           )}
@@ -424,7 +429,7 @@ const App: FC = () => {
               'How many hours do you sleep per night on average?',
               formData['Sleep_Hours'],
               'Sleep_Hours',
-              0,
+              4,
               10,
               1
           )}
