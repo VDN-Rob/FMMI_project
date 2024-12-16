@@ -5,6 +5,7 @@ import CustomSlider from './CustomSlider';
 import CustomDropDown from './CustomDropDown';
 import styles from './styles';
 
+// Version 234
 const API_URL = 'http://18.224.25.73';
 
 const App: FC = () => {
