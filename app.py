@@ -281,7 +281,7 @@ def plot_feature_effect(feature_name):
         # Add explanation text TODO good
         if not state:
             if (user_input_copy[feature_name] != highest_score[0]) and (original_score < highest_score[1]):
-                explanation = f"You should change {mapping_explanation.get(feature_name, feature_name)} to {highest_score[0]}. Your score will then evolve to {highest_score[1]}%"
+                explanation = f"You should change {mapping_explanation.get(feature_name, feature_name)} to {highest_score[0]}."
             else:
                 explanation = f"You should not change anything"
 
@@ -295,22 +295,20 @@ def plot_feature_effect(feature_name):
                 if highest_score[1] > original_score:
                     explanation = (
                         f"{mapping_explanation.get(feature_name, feature_name).capitalize()} differs from the optimal value "
-                        f"(most optimal: '{average_value}'). You might consider aligning it closer to the optimal value "
+                        f"(most optimal: '{highest_score[0]}'). You might consider aligning it closer to the optimal value "
                         f"if feasible, though this depends on other factors. This would, however, increase your score by {round(highest_score[1] - original_score, 2)}%."
                     )
                 else:
                     if user_category == average_value:
                         explanation = (
-                            #f"{mapping_explanation.get(feature_name, feature_name).capitalize()} is typical for most users "
-                            #f"(category: '{average_value}')." +
-                            f"Since your value is '{user_category}', "
-                            f"there’s no significant recommendation to change it."
+                            f"{mapping_explanation.get(feature_name, feature_name).capitalize()} ({user_category}) is already the most optimal value. "
+                            f"As such, there’s no significant reason to change it."
                         )
                     else:
                         explanation = (
                             f"'{average_value}' is typical for most users "
                             f"whereas your value is '{user_category}'. However, as changing your your habits does not seem to imply changes in the predicted score, "
-                            f"there’s no significant recommendation to change it."
+                            f"there’s no recommendation to change it."
                         )
             else:
                 # Feature is numeric
