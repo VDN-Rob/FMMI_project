@@ -92,6 +92,7 @@ const App: FC = () => {
 
   const [plots, setPlots] = useState<Record<string, any>>({});
   const [explanation, setExplanation] = useState<Record<string, any>>();
+  const [state, setState] = useState(true);
 
   const dropdownOptions = {
     lmh: [
@@ -135,8 +136,8 @@ const App: FC = () => {
   };
 
   const handleStudyPointsChange = (value: string) => {
-    setStudyPoints(value); // Update state
-    handleInputChange("Study_Points", value); // Trigger the additional handler
+    setStudyPoints(value);
+    handleInputChange("Study_Points", value);
   };
 
   const handleUrlChange = (key: string, value: string) => {
@@ -150,18 +151,37 @@ const App: FC = () => {
   const handlePredict = async () => {
     try {
       setIsLoading(true);
+      // Submitting prediction
       setLoadingMessage('Submitting data...');
       await axios.post(`${API_URL}/submit_input_prediction`, formData);
 
+      // Waiting for loading of dataset
       setLoadingMessage('Loading dataset...');
       await axios.get(`${API_URL}/load-dataset`);
 
+      // Requesting training of model
       setLoadingMessage('Training model...');
       await axios.post(`${API_URL}/train-model`, {});
 
+      // Request prediction value
       setLoadingMessage('Getting prediction...');
       const response = await axios.get<{ prediction: number}>(`${API_URL}/get_prediction`);
       setPrediction(response.data.prediction);
+
+      // Request explanations
+      setLoadingMessage('Getting explanations...');
+      const response_exp = await axios.get(`${API_URL}/get_explanation`);
+      setExplanation(response_exp.data);
+      setState(response_exp.data.state)
+
+      if (state) {
+        handleFeatureList(response_exp.data.explanation.features)
+      }
+      else {
+        setFeatureList(response_exp.data.explanation.features)
+      }
+
+      setL(featuresList.length)
 
       // Request plots
       const responseURL = await axios.get(`${API_URL}/generate-plots`);
@@ -177,19 +197,6 @@ const App: FC = () => {
           console.warn(`No data found for feature: ${feature}`);
         }
       }
-
-      setLoadingMessage('Getting explanations...');
-      const response_exp = await axios.get(`${API_URL}/get_explanation`);
-      setExplanation(response_exp.data);
-
-      if (response_exp.data.explanation.state) {
-        handleFeatureList(response_exp.data.explanation.features)
-      }
-      else {
-        setFeatureList(response_exp.data.explanation.features)
-      }
-
-      setL(featuresList.length)
 
       setPage('prediction');
     } catch (error) {
@@ -515,7 +522,6 @@ const App: FC = () => {
   }
   
   if (page === 'prediction') {
-    // Render content
     return (
       <View style={styles.topContainer}>
         <View style={styles.ButtonRow}>
@@ -534,66 +540,82 @@ const App: FC = () => {
             <Text style={styles.title_p}>Expected score: {prediction}%</Text>
           </View>
 
-          {/* Chart Section */}
-          <View style={styles.chartContainer}>
-            {chartUrl ? (
-                <Image
+          {state ? (
+            <>
+              {/* Chart Section */}
+              <View style={styles.chartContainer}>
+                {chartUrl ? (
+                  <Image
                     source={{ uri: `${API_URL}${chartUrl.five_factor}?${new Date().getTime()}` }}
                     style={styles.chartImage}
                     resizeMode="contain" // Ensures the image scales proportionally
-                />
-            ) : (
-                <Text style={styles.loadingText2}>Loading chart...</Text> // Fallback message
-            )}
-          </View>
-          
-          {/* <Text style={styles.description}>
-            This graph shows the 5 factors with the greatest impact on your predicted score.
-          </Text> */}
+                  />
+                ) : (
+                  <Text style={styles.loadingText2}>Loading chart...</Text> // Fallback message
+                )}
+              </View>
 
-          <TouchableOpacity style={styles.linkContainer} onPress={() => setPage('explanationgraph')}>
-            <Text style={styles.linkText}>
-              Learn more about how this graph works
-            </Text>
-          </TouchableOpacity>
+              {/* Link */}
+              <TouchableOpacity style={styles.linkContainer} onPress={() => setPage('explanationgraph')}>
+                <Text style={styles.linkText}>
+                  Learn more about how this graph works
+                </Text>
+              </TouchableOpacity>
+            </>
+          ) : null}
+
+
+
 
           {/* Factors Impact Section */}
-          <View style={styles.factorsContainer}>
-          {explanation && (explanation.state ? 
-                            ['the highest', 'the second highest', 'the third highest', 'the fourth highest', 'the fifth highest'] 
-                            : 
-                            ['some', 'some', 'some', 'some', 'some']
-                          ).map((rank, index) => {
-            // Safely access values and features with proper fallback
-            const value = explanation.explanation.values[index]
-            const feature = explanation.explanation.features[index]
-            const mappedFeature = mapping_prediction[feature as keyof typeof mapping_prediction] ?? feature;
+          <ScrollView style={styles.factorsContainer}>
+            {explanation && (explanation.state ? 
+                              ['the highest', 'the second highest', 'the third highest', 'the fourth highest', 'the fifth highest'] 
+                              : 
+                              Array(l).fill("some")
+                            ).map((rank, index) => {
+              // Safely access values and features with proper fallback
+              const value = explanation.explanation.values[index]
+              const feature = explanation.explanation.features[index]
+              const mappedFeature = mapping_prediction[feature as keyof typeof mapping_prediction] ?? feature;
 
 
-            // Initialize score and impact
-            let score = '0';
-            let impact = 'N/A';
+              // Initialize score and impact
+              let score = '0';
+              let impact = 'N/A';
 
-            if (typeof value === 'number') {
-              score = Math.abs(value).toFixed(2) // Absolute value for percentage
-              impact = value > 0 ? 'increases' : 'decreases'
-            }
+              if (typeof value === 'number') {
+                score = Math.abs(value).toFixed(2) // Absolute value for percentage
+                impact = value > 0 ? 'increases' : 'decreases'
+              }
 
-            return (
-              <Text key={index} style={styles.factorText}>
-                • {mappedFeature} has {rank} impact: it {impact} the predicted score by {score} percent.
-              </Text>
-            );
-          })}
-        </View>
+              if (state) {
+                return (
+                  <Text key={index} style={styles.factorText}>
+                    • {mappedFeature} has {rank} impact: it {impact} the predicted score by {score} percent.
+                  </Text>
+                );
+              } else {
+                return (
+                  <Text key={index} style={styles.factorText}>
+                    • {mappedFeature} has {rank} impact: it {impact} the predicted score.
+                  </Text>
+                );
+              }
+            })}
+          </ScrollView>
           {/* Action Buttons */}
           <View style={styles.buttonContainer}>
             <TouchableOpacity onPress={() => {setPage('improvements')}} style={styles.button}>
               <Text style={styles.buttonText}>How to improve my result?</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setPage('DetailedGraph')} style={styles.button}>
-              <Text style={styles.buttonText}>See full graph with all factors</Text>
-            </TouchableOpacity>
+            {state ? (
+              <>
+                <TouchableOpacity onPress={() => setPage('DetailedGraph')} style={styles.button}>
+                  <Text style={styles.buttonText}>See full graph with all factors</Text>
+                </TouchableOpacity>
+              </>
+            ) : null }
           </View>
         </View>
       </View>
@@ -643,21 +665,25 @@ const App: FC = () => {
                   <Text style={styles.FeatureTitle}>Feature Impact Analysis of: <Text style={styles.FeatureName}>{featureName}</Text></Text>
 
                   {/* Check if the current feature exists in the plots */}
-                  {plots[featureName] ? (
-                      <>
-                        {/* Container for graph and text */}
-                        <Text style={styles.ExplanationText}>{plots[featureName].explanation}</Text>
-                        {plots[featureName].url && (
-                            <Image
-                                style={styles.GraphImage}
-                                source={{ uri: `${API_URL}${plots[featureName].url}?${new Date().getTime()}` }}
-                                resizeMode="contain"
-                            />
-                        )}
-                      </>
-                  ) : (
-                      <Text style={styles.LoadingText}>Feature not available.</Text>
-                  )}
+                  <Text style={styles.ExplanationText}>{plots[featureName].explanation}</Text>
+                  {state ? (
+                    <>
+                      {plots[featureName] ? (
+                          <>
+                            {/* Container for graph and text */}
+                            {plots[featureName].url && (
+                                <Image
+                                    style={styles.GraphImage}
+                                    source={{ uri: `${API_URL}${plots[featureName].url}?${new Date().getTime()}` }}
+                                    resizeMode="contain"
+                                />
+                            )}
+                          </>
+                      ) : (
+                          <Text style={styles.LoadingText}>Feature not available.</Text>
+                      )}
+                    </>
+                  ) : null}
                 </View>
               </View>
             </View>
