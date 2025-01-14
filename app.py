@@ -622,11 +622,19 @@ def api_get_prediction():
                 feature_names=sorted_feature_names
             )
         else:
+            # Generate a random permutation
+            shuffle_indices = np.random.permutation(len(shap_values))
+
+            # Shuffle both the values and feature names using the same permutation
+            shuffled_values = shap_values[shuffle_indices]
+            shuffled_feature_names = feature_names[shuffle_indices]
+
+            # Create a new shap.Explanation object with the shuffled values and feature names
             shap_explanation = shap.Explanation(
-                values = shap_values,
+                values = shuffled_values,
                 base_values=explainer.expected_value,
                 data=preprocessed_data,
-                feature_names=feature_names
+                feature_names=shuffled_feature_names
             )
 
         return jsonify({"prediction": prediction}), 200

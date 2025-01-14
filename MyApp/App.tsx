@@ -6,7 +6,7 @@ import CustomDropDown from './CustomDropDown';
 import styles from './styles';
 
 // Version 234
-const API_URL = 'http://18.224.25.73';
+const API_URL = 'http://3.21.207.75';
 
 const App: FC = () => {
   const [page, setPage] = useState<string>('home'); // Dit aanpassen als jullie die als eerste pagina willen
@@ -14,7 +14,7 @@ const App: FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [currentCourse, setCurrentCourse] = useState<string>('');
-  const [studyPoints, setStudyPoints] = useState<string>('30');
+  const [studyPoints, setStudyPoints] = useState<string>();
   const [allCourses, setAllCourses] = useState<string[]>([]);
   let [l, setL] = useState(16);
 
@@ -224,19 +224,6 @@ const App: FC = () => {
     setPage('home')
   }  
 
-  const renderCourseInputField = (label: string, placeholder: string, keyboardType: any = 'default') => (
-      <View style={styles.inputContainer}>
-        <Text style={styles.label_cs}>{label}</Text>
-        <TextInput
-            style={styles.input}
-            placeholder={placeholder}
-            value={currentCourse || ''}  // Use currentCourse as the value
-            keyboardType={keyboardType}
-            onChangeText={(value) => setCurrentCourse(value)}  // Update the currentCourse state
-        />
-      </View>
-  );
-
   const renderDropdown = (label: string, key: string, items: any[]) => (
       <View style={styles.inputContainer}>
         <Text style={styles.label}>{label}</Text>
@@ -259,9 +246,31 @@ const App: FC = () => {
               maximumValue={maxValue}
               step={step_size}
           />
-          <Text style={styles.sliderValue}>
-            Value: {value === maxValue ? `${value}+` : value === minValue ? `${value}-` : value}
-          </Text>
+          { maxValue === 100 ?
+            <>
+              { minValue === 0 ?
+                <Text style={styles.sliderValue}>
+                  Value: {value === maxValue ? `${value}` : value === minValue ? `${value}` : value}
+                </Text>
+                :
+                <Text style={styles.sliderValue}>
+                  Value: {value === maxValue ? `${value}` : value === minValue ? `${value} or less` : value}
+                </Text>
+              }
+            </>
+            :
+            <>
+              { minValue === 0 ?
+                <Text style={styles.sliderValue}>
+                  Value: {value === maxValue ? `${value} or more` : value === minValue ? `${value}` : value}
+                </Text>
+                :
+                <Text style={styles.sliderValue}>
+                  Value: {value === maxValue ? `${value} or more` : value === minValue ? `${value} or less` : value}
+                </Text>
+              }
+            </>
+          }
         </View>
     );
   };
@@ -312,16 +321,25 @@ const App: FC = () => {
 
   if (page === 'tutorial') {
     return (
-      <View style={styles.topContainer}>
-        <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('home')}>
-          <Text style={styles.ButtonText}>Back</Text>
-        </TouchableOpacity>
-        <View style={styles.TutorialContainer}>
-          <Text style={styles.SmallTitle}>
+      <ImageBackground
+        source={require('./images/background.jpg')} // Reference your local image
+        style={styles.background}
+      >
+        <View style={styles.MainContainer}>
+        <View style={styles.ButtonContainer}>
+            <TouchableOpacity style={styles.LeftButtonBG} onPress={() => setPage('home')}>
+              <Text style={styles.ButtonText}>Back</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.HiddenButtonBG}>
+              <Text style={styles.HiddenButtonText}>Back to main screen</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.Title}>
             How does our application work?
           </Text>
           
-          <ScrollView contentContainerStyle={styles.Input_container}>
+          <ScrollView>
             <View style={styles.Group998}>
               <Text style={styles.WhatDoesItDoThisAppl}>What does it do?</Text>
               <Text style={styles.Subtext}>
@@ -355,39 +373,53 @@ const App: FC = () => {
             </View>
           </ScrollView>
         </View>
-      </View>
+      </ImageBackground>
     );
   }
 
   if (page === 'ChooseCourse') {
     return (      
-    <View style={styles.topContainer}>
-      <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('home')}>
-        <Text style={styles.ButtonText}>Back</Text>
-      </TouchableOpacity>
-      <View style={styles.CSContainer}>
-          <View style={styles.ForWhichCourseDoYouW}>
-            {renderCourseInputField("For which course do you want to make a prediction?", "Enter your course here")}
+      <ImageBackground
+      source={require('./images/background.jpg')} // Reference your local image
+      style={styles.background}
+      >
+        <View style={styles.MainContainer}>
+          <View style={styles.ButtonContainer}>
+            <TouchableOpacity style={styles.LeftButtonBG} onPress={() => setPage('home')}>
+              <Text style={styles.ButtonText}>Back</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.HiddenButtonBG}>
+              <Text style={styles.HiddenButtonText}>Back to main screen</Text>
+            </TouchableOpacity>
           </View>
+
           <View style={styles.inputContainer}>
-            <Text style={styles.label_sp}>{"Study points"}</Text>
+            <Text style={styles.Title}>For which course do you want to make a prediction?</Text>
             <TextInput
-                style={styles.input_sp}
+                style={styles.input}
+                placeholder={'Enter your course here'}
+                value={currentCourse || ''}  // Use currentCourse as the value
+                onChangeText={(value) => setCurrentCourse(value)}  // Update the currentCourse state
+            />
+          </View> 
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.SubTitle}>{"Study points"}</Text>
+            <TextInput
+                style={styles.input}
                 placeholder={"e.g. 6"}
                 value={studyPoints}
                 keyboardType={'default'}
                 onChangeText={(value) => handleStudyPointsChange(value)}
             />
           </View>
-          <Text style={styles.BoldText}>
+          <Text style={styles.SubTitle}>
             Overview of previous predictions
           </Text>
-          <Text style={styles.ButtonText}>
+          <Text style={styles.SmallText}>
             (Pick one to load the inputs)
           </Text>
           <View style={styles.CSTableContainer}>
-            {/* Overview here */}
-
             <View style={styles.coursesListContainer}>
               {allCourses.length === 0 ? ( // Check if the array is empty
                   <Text style={styles.CSPlaceholderMessage}>No predictions made yet</Text> // Display a message
@@ -400,237 +432,263 @@ const App: FC = () => {
                   />
               )}
             </View>
+          </View>
+          <View style={styles.CSBottomContainer}>
+            <View style={styles.CSSelected}>
+              <Text style={styles.BoldText}>You selected: {currentCourse}</Text>
+            </View>
+            <View style={styles.ButtonContainer}>
+              <TouchableOpacity style={styles.LeftButtonBG} onPress={() => setPage('home')}>
+                <Text style={styles.ButtonText}>Back</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleCourseSelection} style={styles.RightButtonBG}>
+                <Text style={styles.ButtonText}>Continue</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
-      </View>
-      <View style={styles.CSBottomContainer}>
-        <View style={styles.CSSelected}>
-          <Text style={styles.BoldText}>You selected: {currentCourse}</Text>
-        </View>
-        <TouchableOpacity style={styles.ButtonBG} onPress={handleCourseSelection}>
-          <Text style={styles.ButtonText}>Continue</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </ImageBackground>
     )
   }
 
   if (page === 'input') {
     return (
-      <View style={styles.topContainer}>
-        <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('ChooseCourse')}>
-          <Text style={styles.ButtonText}>Back</Text>
-        </TouchableOpacity>
-        <ScrollView contentContainerStyle={styles.Input_container}>
-          <Text style={styles.SmallTitle}>Please provide following details for the selected course</Text>
-          {renderSlider(
-              'How many hours do you study per week (excluding classes) for this course?',
-              formData['Hours_Studied'],
-              'Hours_Studied',
-              1,
-              44,
-              1
-          )}
-          {renderSlider(
-              'What is your attendance rate for this course (%)?',
-              formData['Attendance'],
-              'Attendance',
-              60,
-              100,
-              1
-          )}
-          {renderSlider(
-              'Previous Year Score',
-              formData['Previous_Scores'],
-              'Previous_Scores',
-              50,
-              100,
-              1
-          )}
-          {renderDropdown(
-              'How much are your parents able to help with the learning material?',
-              'Parental_Involvement',
-              dropdownOptions.lmh
-          )}
-          {renderDropdown(
-              'Do you engage in extracurricular activities?',
-              'Extracurricular_Activities',
-              dropdownOptions.yn
-          )}
-          {renderSlider(
-              'How many hours do you sleep per night on average?',
-              formData['Sleep_Hours'],
-              'Sleep_Hours',
-              4,
-              10,
-              1
-          )}
-          {renderDropdown(
-              'How motivated are you for this course?',
-              'Motivation_Level',
-              dropdownOptions.lmh
-          )}
-          {renderSlider(
-              'How many tutoring sessions do you follow on average per week for this course?',
-              formData['Tutoring_Sessions'],
-              'Tutoring_Sessions',
-              0,
-              8,
-              1
-          )}
-          {renderDropdown(
-              'What is the level of your family income?',
-              'Family_Income',
-              dropdownOptions.lmh
-          )}
-          {renderDropdown(
-              'How do you perceive the capabilities of the teacher?',
-              'Teacher_Quality',
-              dropdownOptions.lmh
-          )}
-          {renderDropdown(
-              'How do you think your friends influence your academic performance? ',
-              'Peer_Influence',
-              dropdownOptions.nnp
-          )}
-          {renderSlider(
-              'How many hours per week on average do you engage in physical exercise?',
-              formData['Physical_Activity'],
-              'Physical_Activity',
-              0,
-              6,
-              1
-          )}
-          {renderDropdown(
-              'What distance must you travel to go to classes?',
-              'Distance_from_Home',
-              dropdownOptions.nmf
-          )}
-          {renderDropdown(
-              'Do you have a learning disability?',
-              'Learning_Disabilities',
-              dropdownOptions.yn
-          )}
-          {renderDropdown('What is your gender?', 'Gender', dropdownOptions.gender)}
-          
-          <TouchableOpacity style={styles.ButtonBG} onPress={handlePredict}>
-            <Text style={styles.ButtonText}>Continue</Text>
-          </TouchableOpacity>
-        </ScrollView>
-        
-      </View>
+      <ImageBackground
+      source={require('./images/background.jpg')} // Reference your local image
+      style={styles.background}
+      >
+        <View style={styles.MainContainer}>
+          <View style={styles.ButtonContainer}>
+            <TouchableOpacity style={styles.LeftButtonBG} onPress={() => setPage('ChooseCourse')}>
+              <Text style={styles.ButtonText}>Back</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.HiddenButtonBG}>
+              <Text style={styles.HiddenButtonText}>Back to main screen</Text>
+            </TouchableOpacity>
+          </View>
+            
+          <ScrollView contentContainerStyle={styles.Input_container}>
+            <Text style={styles.Title}>Please provide following details for the selected course</Text>
+            {renderSlider(
+                'How many hours do you study per week (excluding classes) for this course?',
+                formData['Hours_Studied'],
+                'Hours_Studied',
+                1,
+                44,
+                1
+            )}
+            {renderSlider(
+                'What is your attendance rate for this course (%)?',
+                formData['Attendance'],
+                'Attendance',
+                60,
+                100,
+                1
+            )}
+            {renderSlider(
+                'Previous Year Score',
+                formData['Previous_Scores'],
+                'Previous_Scores',
+                50,
+                100,
+                1
+            )}
+            {renderDropdown(
+                'How much are your parents able to help with the learning material?',
+                'Parental_Involvement',
+                dropdownOptions.lmh
+            )}
+            {renderDropdown(
+                'Do you engage in extracurricular activities?',
+                'Extracurricular_Activities',
+                dropdownOptions.yn
+            )}
+            {renderSlider(
+                'How many hours do you sleep per night on average?',
+                formData['Sleep_Hours'],
+                'Sleep_Hours',
+                4,
+                10,
+                1
+            )}
+            {renderDropdown(
+                'How motivated are you for this course?',
+                'Motivation_Level',
+                dropdownOptions.lmh
+            )}
+            {renderSlider(
+                'How many tutoring sessions do you follow on average per week for this course?',
+                formData['Tutoring_Sessions'],
+                'Tutoring_Sessions',
+                0,
+                8,
+                1
+            )}
+            {renderDropdown(
+                'What is the level of your family income?',
+                'Family_Income',
+                dropdownOptions.lmh
+            )}
+            {renderDropdown(
+                'How do you perceive the capabilities of the teacher?',
+                'Teacher_Quality',
+                dropdownOptions.lmh
+            )}
+            {renderDropdown(
+                'How do you think your friends influence your academic performance? ',
+                'Peer_Influence',
+                dropdownOptions.nnp
+            )}
+            {renderSlider(
+                'How many hours per week on average do you engage in physical exercise?',
+                formData['Physical_Activity'],
+                'Physical_Activity',
+                0,
+                6,
+                1
+            )}
+            {renderDropdown(
+                'What distance must you travel to go to classes?',
+                'Distance_from_Home',
+                dropdownOptions.nmf
+            )}
+            {renderDropdown(
+                'Do you have a learning disability?',
+                'Learning_Disabilities',
+                dropdownOptions.yn
+            )}
+            {renderDropdown('What is your gender?', 'Gender', dropdownOptions.gender)}
 
+            <View style={styles.ButtonContainer}>
+              <TouchableOpacity style={styles.LeftButtonBG} onPress={() => setPage('ChooseCourse')}>
+                <Text style={styles.ButtonText}>Back</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.RightButtonBG} onPress={handlePredict}>
+                <Text style={styles.ButtonText}>Continue</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </View>
+      </ImageBackground>
     );
   }
   
   if (page === 'prediction') {
     return (
-      <View style={styles.topContainer}>
-        <View style={styles.ButtonRow}>
-          <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('input')}>
-            <Text style={styles.ButtonText}>Back</Text>
-          </TouchableOpacity>
-          <View style={styles.rightContainer}>
-          <TouchableOpacity onPress={handleCleaning} style={styles.buttonBG}>
-            <Text style={styles.ButtonText}>Go back to main screen</Text>
-          </TouchableOpacity>
-          </View>
-        </View>
-        
-        <View style={styles.container_p}>
-          <View style={styles.header_p}>
-            <Text style={styles.title_p}>Expected score: {prediction}%</Text>
-          </View>
-
-          {state ? (
-            <>
-              {/* Chart Section */}
-              <View style={styles.chartContainer}>
-                {chartUrl ? (
-                  <Image
-                    source={{ uri: `${API_URL}${chartUrl.five_factor}?${new Date().getTime()}` }}
-                    style={styles.chartImage}
-                    resizeMode="contain" // Ensures the image scales proportionally
-                  />
-                ) : (
-                  <Text style={styles.loadingText2}>Loading chart...</Text> // Fallback message
-                )}
-              </View>
-
-              {/* Link */}
-              <TouchableOpacity style={styles.linkContainer} onPress={() => setPage('explanationgraph')}>
-                <Text style={styles.linkText}>
-                  Learn more about how this graph works
-                </Text>
-              </TouchableOpacity>
-            </>
-          ) : null}
-
-
-
-
-          {/* Factors Impact Section */}
-          <ScrollView style={styles.factorsContainer}>
-            {explanation && (explanation.state ? 
-                              ['the highest', 'the second highest', 'the third highest', 'the fourth highest', 'the fifth highest'] 
-                              : 
-                              Array(l).fill("some")
-                            ).map((rank, index) => {
-              // Safely access values and features with proper fallback
-              const value = explanation.explanation.values[index]
-              const feature = explanation.explanation.features[index]
-              const mappedFeature = mapping_prediction[feature as keyof typeof mapping_prediction] ?? feature;
-
-
-              // Initialize score and impact
-              let score = '0';
-              let impact = 'N/A';
-
-              if (typeof value === 'number') {
-                score = Math.abs(value).toFixed(2) // Absolute value for percentage
-                impact = value > 0 ? 'increases' : 'decreases'
-              }
-
-              if (state) {
-                return (
-                  <Text key={index} style={styles.factorText}>
-                    • {mappedFeature} has {rank} impact: it {impact} the predicted score by {score} percent.
-                  </Text>
-                );
-              } else {
-                return (
-                  <Text key={index} style={styles.factorText}>
-                    • {mappedFeature} has {rank} impact: it {impact} the predicted score.
-                  </Text>
-                );
-              }
-            })}
-          </ScrollView>
-          {/* Action Buttons */}
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={() => {setPage('improvements')}} style={styles.button}>
-              <Text style={styles.buttonText}>How to improve my result?</Text>
+      <ImageBackground
+      source={require('./images/background.jpg')} // Reference your local image
+      style={styles.background}
+      >
+        <View style={styles.MainContainer}>
+          <View style={styles.ButtonContainer}>
+            <TouchableOpacity style={styles.LeftButtonBG} onPress={() => setPage('input')}>
+              <Text style={styles.ButtonText}>Back</Text>
             </TouchableOpacity>
+            <TouchableOpacity onPress={handleCleaning} style={styles.RightButtonBG}>
+              <Text style={styles.ButtonText}>Main screen</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.Title}>Expected score: {prediction}%</Text>
+
             {state ? (
               <>
-                <TouchableOpacity onPress={() => setPage('DetailedGraph')} style={styles.button}>
-                  <Text style={styles.buttonText}>See full graph with all factors</Text>
+                {/* Chart Section */}
+                <View style={styles.chartContainer}>
+                  {chartUrl ? (
+                    <Image
+                      source={{ uri: `${API_URL}${chartUrl.five_factor}?${new Date().getTime()}` }}
+                      style={styles.chartImage}
+                      resizeMode="contain" // Ensures the image scales proportionally
+                    />
+                  ) : (
+                    <Text style={styles.loadingText2}>Loading chart...</Text> // Fallback message
+                  )}
+                </View>
+
+                {/* Link */}
+                <TouchableOpacity style={styles.linkContainer} onPress={() => setPage('explanationgraph')}>
+                  <Text style={styles.linkText}>
+                    Learn more about how this graph works
+                  </Text>
                 </TouchableOpacity>
               </>
-            ) : null }
+            ) : null}
+
+            {/* Factors Impact Section */}
+            <ScrollView style={styles.factorsContainer}>
+              {explanation && (explanation.state ? 
+                                ['the highest', 'the second highest', 'the third highest', 'the fourth highest', 'the fifth highest'] 
+                                : 
+                                Array(l).fill("some")
+                              ).map((rank, index) => {
+                // Safely access values and features with proper fallback
+                const value = explanation.explanation.values[index]
+                const feature = explanation.explanation.features[index]
+                const mappedFeature = mapping_prediction[feature as keyof typeof mapping_prediction] ?? feature;
+
+
+                // Initialize score and impact
+                let score = '0';
+                let impact = 'N/A';
+
+                if (typeof value === 'number') {
+                  score = Math.abs(value).toFixed(2) // Absolute value for percentage
+                  impact = value > 0 ? 'increases' : 'decreases'
+                }
+
+                if (state) {
+                  return (
+                    <Text key={index} style={styles.factorText}>
+                      • {mappedFeature} has {rank} impact: it {impact} the predicted score by {score} percent.
+                    </Text>
+                  );
+                } else {
+                  return (
+                    <Text key={index} style={styles.factorText}>
+                      • {mappedFeature} has {rank} impact: it {impact} the predicted score.
+                    </Text>
+                  );
+                }
+              })}
+            </ScrollView>
+
+            {/* Action Buttons */}
+            <View style={styles.VerticalButtonContainer}>
+              <TouchableOpacity onPress={() => {setPage('improvements')}} style={styles.button}>
+                <Text style={styles.buttonText}>How to improve my result?</Text>
+              </TouchableOpacity>
+              {state ? (
+                <>
+                  <TouchableOpacity onPress={() => setPage('DetailedGraph')} style={styles.button}>
+                    <Text style={styles.buttonText}>See full graph with all factors</Text>
+                  </TouchableOpacity>
+                </>
+              ) : null }
+            </View>
           </View>
-        </View>
-      </View>
+      </ImageBackground>
     );
   }
 
   if (page === 'DetailedGraph') {
     return (
-        <View style={styles.container2}>
-          {/* Header with Back Button */}
-          <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('prediction')}>
-            <Text style={styles.ButtonText}>Back</Text>
-          </TouchableOpacity>
-          <Text style={styles.title_margin_top}>Expected score: {prediction}%</Text>
+      <ImageBackground
+      source={require('./images/background.jpg')} // Reference your local image
+      style={styles.background}
+      >
+        <View style={styles.MainContainer}>
+
+          <View style={styles.FixedButtonContainer}>
+            <TouchableOpacity style={styles.LeftButtonBG} onPress={() => setPage('prediction')}>
+              <Text style={styles.ButtonText}>Back</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.HiddenButtonBG}>
+              <Text style={styles.HiddenButtonText}>Main screen</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.Title}>Expected score: {prediction}%</Text>
 
           {/* Chart Section */}
           <View style={styles.chartContainer}>
@@ -645,24 +703,33 @@ const App: FC = () => {
             )}
           </View>
         </View>
+      </ImageBackground>
     );
   };
 
   if (page === 'improvements') {
     return (
-        <View style={styles.top_container_i}>
-          <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('prediction')}>
-            <Text style={styles.ButtonText}>Back</Text>
-          </TouchableOpacity>
+      <ImageBackground
+      source={require('./images/background.jpg')} // Reference your local image
+      style={styles.background}
+      >
+        <View style={styles.MainContainer}>
+
+          <View style={styles.ButtonContainer}>
+            <TouchableOpacity style={styles.LeftButtonBG} onPress={() => setPage('prediction')}>
+              <Text style={styles.ButtonText}>Back</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.HiddenButtonBG}>
+              <Text style={styles.HiddenButtonText}>Main screen</Text>
+            </TouchableOpacity>
+          </View>
+
           <View style={styles.center}>
-            <Text style={styles.ExpectedScore}>Predicted score: {prediction}%</Text>
+            <Text style={styles.ExpectedScore}>Expected score: {prediction}%</Text>
           </View>
           
           {/* Scrollable feature analysis section */}
-          <View style={styles.Iphone13145_i}>
-            <View style={styles.Group471_i}>
-              <View style={styles.Group23_i}>
-                <View style={styles.Group20_i}>
+          <View style={styles.GEContainer}>
                   <Text style={styles.FeatureTitle}>Feature Impact Analysis of: <Text style={styles.FeatureName}>{featureName}</Text></Text>
 
                   {/* Check if the current feature exists in the plots */}
@@ -685,46 +752,61 @@ const App: FC = () => {
                       )}
                     </>
                   ) : null}
-                </View>
-              </View>
-            </View>
           </View>
 
           
           {/* Navigation buttons to go to the next/previous feature */}
-          <View style={styles.NavigationButtons}>
-            <TouchableOpacity style={styles.ButtonBG} onPress={handlePreviousFeature}>
+          <View style={styles.ButtonContainer}>
+            <TouchableOpacity style={styles.LeftButtonBG} onPress={handlePreviousFeature}>
               <Text style={styles.ButtonText}>Previous</Text>
             </TouchableOpacity>
             <Text> {currentFeature+1}/{l}</Text>
-            <TouchableOpacity style={styles.ButtonBG} onPress={handleNextFeature}>
+            <TouchableOpacity style={styles.LeftButtonBG} onPress={handleNextFeature}>
               <Text style={styles.ButtonText}>Next</Text>
             </TouchableOpacity>
           </View>
         </View>
+      </ImageBackground>
     );
   }
 
   if (page === 'explanationgraph') {
     return (
-        <View style={styles.container_p}>
-          <TouchableOpacity style={styles.ButtonBG} onPress={() => setPage('prediction')}>
-            <Text style={styles.ButtonText}>Back</Text>
-          </TouchableOpacity>
-          <View style={styles.chartContainer_e}>
-            {chartUrl ? (
-                  <Image
+      <ImageBackground
+      source={require('./images/background.jpg')} // Reference your local image
+      style={styles.background}
+      >
+        <View style={styles.MainContainer}>
+
+          <View style={styles.ButtonContainer}>
+            <TouchableOpacity style={styles.LeftButtonBG} onPress={() => setPage('prediction')}>
+              <Text style={styles.ButtonText}>Back</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.HiddenButtonBG}>
+              <Text style={styles.HiddenButtonText}>Main screen</Text>
+            </TouchableOpacity>
+          </View>
+
+          {state ? (
+              <>
+                {/* Chart Section */}
+                <View style={styles.chartContainer}>
+                  {chartUrl ? (
+                    <Image
                       source={{ uri: `${API_URL}${chartUrl.five_factor}?${new Date().getTime()}` }}
                       style={styles.chartImage}
                       resizeMode="contain" // Ensures the image scales proportionally
-                  />
-              ) : (
-                  <Text style={styles.loadingText2}>Loading chart...</Text> // Fallback message
-              )}
-          </View>
+                    />
+                  ) : (
+                    <Text style={styles.loadingText2}>Loading chart...</Text> // Fallback message
+                  )}
+                </View>
+              </>
+            ) : null}
+
           <View style={styles.Explanation}>
             <Text style={styles.subsubtitle}>
-              Starting Point (blue bar):
+              Starting Point (left blue bar):
             </Text>
             <Text style={styles.Subtext}>
               The graph begins with the average score, representing
@@ -753,7 +835,7 @@ const App: FC = () => {
               reflects the magnitude of each factor's impact on your score.
             </Text>
             <Text style={styles.subsubtitle}>
-              Final Score (gold bar):
+              Final Score (right blue bar):
             </Text>
             <Text style={styles.Subtext}>
               The combined adjustments (positive and negative) lead to your
@@ -761,6 +843,7 @@ const App: FC = () => {
             </Text>
           </View>
         </View>
+      </ImageBackground>
     )
   }
 

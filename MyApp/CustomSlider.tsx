@@ -25,9 +25,9 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
     step = 1,
     value = 50,
     onValueChange,
-    trackColor = '#d3d3d3',
-    thumbColor = '#1FB28A',
-    minimumTrackColor = '#1FB28A',
+    trackColor = "rgba(44,17,252,0.08)",
+    thumbColor = "rgba(44,17,252,0.7)",
+    minimumTrackColor = "rgba(44,17,252,0.2)",
 }) => {
     const sliderWidth = Dimensions.get('window').width * 0.8;
 
